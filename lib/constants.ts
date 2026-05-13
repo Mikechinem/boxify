@@ -6,15 +6,19 @@ export const BRAND = {
   tagline: "Your Abuja & Lagos Fulfilment Branch",
 };
 
-export const WHATSAPP_URL = "https://wa.me/YOURNUMBER";
+export const WHATSAPP_URL = "https://wa.me/2349021000812";
 
 export const TRACKING = {
   metaPixelId: process.env.NEXT_PUBLIC_META_PIXEL_ID || "",
   gaMeasurementId: process.env.NEXT_PUBLIC_GA_MEASUREMENT_ID || "",
 
   /**
-   * Keep this false until you create a backend API route for Meta CAPI.
-   * When ready, create: app/api/track/lead/route.ts
+   * This must be true for Meta Conversion API forwarding to work.
+   * Make sure app/api/track/lead/route.ts exists and your .env.local has:
+   *
+   * META_DATASET_ID
+   * META_ACCESS_TOKEN
+   * META_GRAPH_API_VERSION
    */
-  enableCapiForwarding: false,
+  enableCapiForwarding: true,
 };

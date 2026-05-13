@@ -1,7 +1,11 @@
 "use client";
 
 import Link from "next/link";
-import { trackLeadClick } from "@/lib/tracking";
+import {
+  captureAttributionFromCurrentUrl,
+  isWhatsAppDestination,
+  trackLeadClick,
+} from "@/lib/tracking";
 
 type CTAButtonProps = {
   href: string;
@@ -19,6 +23,7 @@ export default function CTAButton({
   className = "",
 }: CTAButtonProps) {
   const isInternalAnchor = href.startsWith("#");
+  const isWhatsAppLink = isWhatsAppDestination(href);
 
   const baseClass =
     "inline-flex items-center justify-center rounded-full px-6 py-3 text-sm font-bold transition duration-200 focus:outline-none focus:ring-2 focus:ring-orange-500 focus:ring-offset-2 focus:ring-offset-black";
@@ -32,12 +37,20 @@ export default function CTAButton({
       "text-orange-300 underline-offset-4 hover:text-orange-200 hover:underline",
   };
 
+  function getButtonLabel() {
+    return typeof children === "string" ? children : "Boxify CTA";
+  }
+
   function handleClick(event: React.MouseEvent<HTMLAnchorElement>) {
-    trackLeadClick({
-      label: typeof children === "string" ? children : "Boxify CTA",
-      destination: href,
-      section,
-    });
+    captureAttributionFromCurrentUrl();
+
+    if (isWhatsAppLink) {
+      trackLeadClick({
+        label: getButtonLabel(),
+        destination: href,
+        section,
+      });
+    }
 
     if (isInternalAnchor) {
       event.preventDefault();
@@ -50,7 +63,8 @@ export default function CTAButton({
           block: "start",
         });
 
-        window.history.pushState(null, "", href);
+        const nextUrl = `${window.location.pathname}${window.location.search}${href}`;
+        window.history.pushState(null, "", nextUrl);
       }
     }
   }
