@@ -1,4 +1,4 @@
-export const SITE_URL = "https://your-domain.com";
+export const SITE_URL = "https://boxify-liard.vercel.app/";
 
 export const BRAND = {
   name: "Boxify",
