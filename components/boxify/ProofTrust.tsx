@@ -124,62 +124,6 @@ export default function ProofTrust() {
         ))}
       </div>
 
-      <div className="mt-16 grid gap-8 lg:grid-cols-[0.9fr_1.1fr] lg:items-start">
-        <div className="rounded-[2rem] border border-white/10 bg-black p-6 glow-card">
-          <p className="text-xs font-black uppercase tracking-[0.22em] text-orange-400">
-            Why Vendors Trust The Flow
-          </p>
-
-          <h3 className="mt-3 text-3xl font-black tracking-tight text-white">
-            Once Delivery Becomes Clear, The Sale Feels Safer.
-          </h3>
-
-          <p className="mt-5 text-sm leading-8 text-zinc-400">
-            The biggest fear for ecommerce vendors is not just whether a rider
-            will move the package. It is whether the customer will be reached,
-            the order will be handled well, POD will be clear, reports will come
-            in, and the vendor will know what happened after dispatch.
-          </p>
-
-          <div className="mt-7 rounded-3xl border border-orange-500/20 bg-orange-500/10 p-5">
-            <p className="text-sm font-bold leading-7 text-orange-100">
-              Boxify helps make the after-sale experience feel more controlled,
-              more visible, and more professional for vendors selling into Abuja
-              and Lagos.
-            </p>
-          </div>
-        </div>
-
-        <div className="rounded-[2rem] border border-white/10 bg-black p-6 glow-card">
-          <p className="text-xs font-black uppercase tracking-[0.22em] text-orange-400">
-            Built For Nigerian Ecommerce
-          </p>
-
-          <h3 className="mt-3 text-3xl font-black tracking-tight text-white">
-            {credibility.headline}
-          </h3>
-
-          <p className="mt-5 text-sm leading-8 text-zinc-400">
-            {credibility.body}
-          </p>
-
-          <div className="mt-7 grid gap-3">
-            {credibility.bullets.map((bullet) => (
-              <div
-                key={bullet}
-                className="flex gap-3 rounded-2xl bg-white/[0.04] p-4"
-              >
-                <span className="mt-1 flex size-5 shrink-0 items-center justify-center rounded-full bg-orange-500 text-xs font-black text-white">
-                  ✓
-                </span>
-
-                <p className="text-sm leading-6 text-zinc-300">{bullet}</p>
-              </div>
-            ))}
-          </div>
-        </div>
-      </div>
-
       <div className="mx-auto mt-12 max-w-4xl rounded-[2rem] border border-orange-500/20 bg-orange-500/10 p-6 text-center sm:p-8">
         <p className="text-xs font-black uppercase tracking-[0.22em] text-orange-300">
           Ready To Clean Up Your Fulfilment?

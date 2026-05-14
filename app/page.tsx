@@ -7,7 +7,6 @@ import BenefitCards from "@/components/boxify/BenefitCards";
 import OfferStack from "@/components/boxify/OfferStack";
 import ProofTrust from "@/components/boxify/ProofTrust";
 import ObjectionHandling from "@/components/boxify/ObjectionHandling";
-import RiskReversal from "@/components/boxify/RiskReversal";
 import FAQSection from "@/components/boxify/FAQSection";
 import FinalCTA from "@/components/boxify/FinalCTA";
 import StickyMobileCTA from "@/components/boxify/StickyMobileCTA";
@@ -23,7 +22,6 @@ export default function Home() {
       <BenefitCards />
       <OfferStack />
       <ProofTrust />
-      <RiskReversal />
       <ObjectionHandling />
       <FAQSection />
       <FinalCTA />

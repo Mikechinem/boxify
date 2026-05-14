@@ -1,66 +1,81 @@
+import Image from "next/image";
 import { boxifyData } from "@/data/boxify";
-import CTAButton from "@/components/shared/CTAButton";
 import SectionWrapper from "@/components/shared/SectionWrapper";
 
+const problemImages = [
+  {
+    src: "https://ik.imagekit.io/j1e78ujalr/boxify_testimonilas_edited/boxifyarranged_landing_2400w.jpg",
+    alt: "Boxify arranged ecommerce packages ready for fulfilment",
+    title: "Orders Should Not Look Scattered After The Customer Pays.",
+    caption:
+      "A clear fulfilment process helps your products move from storage to packaging to delivery without making your brand look disorganized.",
+  },
+  {
+    src: "https://ik.imagekit.io/j1e78ujalr/boxify_testimonilas_edited/boxify_bikes_landing_2400w.jpg",
+    alt: "Boxify delivery bikes ready for ecommerce dispatch",
+    title: "The Delivery Stage Is Where Customer Trust Is Won Or Lost.",
+    caption:
+      "When dispatch is structured, customers get a smoother experience and vendors stop chasing riders for every single update.",
+  },
+];
+
 export default function ProblemAgitation() {
-  const { intro, problems, ctas, whatsappUrl } = boxifyData;
+  const { problems } = boxifyData;
 
   return (
-    <>
-      <SectionWrapper className="bg-white text-zinc-950">
-        <div className="mx-auto max-w-4xl text-center">
-          <p className="mb-4 text-xs font-black uppercase tracking-[0.22em] text-orange-600">
-            After the sale
-          </p>
-          <h2 className="text-3xl font-black tracking-tight sm:text-4xl lg:text-5xl">
-            {intro.headline}
-          </h2>
+    <SectionWrapper className="bg-zinc-950">
+      <div className="mx-auto max-w-5xl text-center">
+        <p className="mb-4 text-sm font-black uppercase tracking-[0.22em] text-orange-400">
+          The Real Problem
+        </p>
 
-          <div className="mt-8 space-y-4 text-lg leading-8 text-zinc-700">
-            {intro.lines.map((line) => (
-              <p key={line}>{line}</p>
-            ))}
-          </div>
+        <h2 className="mx-auto max-w-5xl text-4xl font-black leading-tight tracking-tight text-white sm:text-5xl lg:text-6xl">
+          {problems.headline}
+        </h2>
 
-          <div className="mt-9">
-            <CTAButton href="#fulfilment-form" section="problem-scroll-to-form">
-            {ctas.problem}
-           </CTAButton>
+        <p className="mx-auto mt-6 max-w-3xl text-lg font-medium leading-9 text-zinc-300 sm:text-xl">
+          {problems.copy}
+        </p>
+      </div>
+
+      <div className="mt-14 grid gap-6 lg:grid-cols-2">
+        {problemImages.map((item) => (
+          <article
+            key={item.title}
+            className="overflow-hidden rounded-[2rem] border border-white/10 bg-white/[0.04] p-4 transition hover:-translate-y-1 hover:border-orange-500/40 hover:bg-orange-500/10"
+          >
+            <div className="relative flex min-h-[280px] items-center justify-center overflow-hidden rounded-[1.5rem] border border-white/10 bg-black p-3 sm:min-h-[380px]">
+              <Image
+                src={item.src}
+                alt={item.alt}
+                fill
+                sizes="(max-width: 1024px) 100vw, 50vw"
+                className="object-contain p-2"
+              />
             </div>
-             </div>
-        </SectionWrapper>
 
-      <SectionWrapper className="bg-zinc-950">
-        <div className="grid gap-12 lg:grid-cols-[0.9fr_1.1fr] lg:items-start">
-          <div className="lg:sticky lg:top-10">
-            <p className="mb-4 text-xs font-black uppercase tracking-[0.22em] text-orange-400">
-              The real problem
-            </p>
-            <h2 className="text-3xl font-black tracking-tight text-white sm:text-4xl lg:text-5xl">
-              {problems.headline}
-            </h2>
-            <p className="mt-6 text-base leading-8 text-zinc-300">{problems.copy}</p>
-            <p className="mt-6 rounded-3xl border border-orange-500/20 bg-orange-500/10 p-5 text-sm font-bold leading-7 text-orange-100">
-              {problems.closing}
-            </p>
-          </div>
+            <div className="p-2 pt-6">
+              <h3 className="text-2xl font-black leading-tight text-white sm:text-3xl">
+                {item.title}
+              </h3>
 
-          <div className="grid gap-4 sm:grid-cols-2">
-            {problems.cards.map((card, index) => (
-              <div
-                key={card.title}
-                className="rounded-3xl border border-white/10 bg-white/[0.04] p-6 transition hover:-translate-y-1 hover:border-orange-500/40 hover:bg-orange-500/10"
-              >
-                <div className="mb-5 flex size-12 items-center justify-center rounded-2xl bg-orange-500/15 text-lg font-black text-orange-300">
-                  {String(index + 1).padStart(2, "0")}
-                </div>
-                <h3 className="text-xl font-black text-white">{card.title}</h3>
-                <p className="mt-3 text-sm leading-7 text-zinc-400">{card.body}</p>
-              </div>
-            ))}
-          </div>
-        </div>
-      </SectionWrapper>
-    </>
+              <p className="mt-3 text-base leading-8 text-zinc-400">
+                {item.caption}
+              </p>
+            </div>
+          </article>
+        ))}
+      </div>
+
+      <div className="mx-auto mt-12 max-w-4xl rounded-[2rem] border border-orange-500/20 bg-orange-500/10 p-6 text-center sm:p-8">
+        <h3 className="text-2xl font-black tracking-tight text-white sm:text-3xl">
+          The more orders you get, the more your fulfilment system needs to look organized behind the scenes.
+        </h3>
+
+        <p className="mx-auto mt-4 max-w-2xl text-base leading-8 text-zinc-300">
+          Boxify helps ecommerce vendors replace delivery chaos with a cleaner process for storage, confirmation, packaging, dispatch, reporting, and remittance.
+        </p>
+      </div>
+    </SectionWrapper>
   );
 }

@@ -1,70 +1,111 @@
+import Image from "next/image";
 import { boxifyData } from "@/data/boxify";
 import CTAButton from "@/components/shared/CTAButton";
-import SectionHeading from "@/components/shared/SectionHeading";
 import SectionWrapper from "@/components/shared/SectionWrapper";
 
+const costPoints = [
+  {
+    title: "Failed delivery drains profit",
+    body: "You pay for movement, time, and follow-up — even when the customer does not receive the order.",
+  },
+  {
+    title: "Poor delivery kills repeat sales",
+    body: "Customers may like your product, but still avoid buying again if delivery felt stressful.",
+  },
+  {
+    title: "Manual follow-up blocks growth",
+    body: "You cannot scale smoothly if every order still needs rider-chasing and WhatsApp tracking.",
+  },
+];
+
 export default function CostOfInaction() {
-  const { costs, ctas, whatsappUrl } = boxifyData;
+  const { costs, ctas } = boxifyData;
 
   return (
     <SectionWrapper className="bg-black">
-      <div className="grid gap-12 lg:grid-cols-[1fr_0.85fr] lg:items-center">
+      <div className="grid gap-12 lg:grid-cols-[0.95fr_1.05fr] lg:items-center">
+        {/* Text content */}
         <div>
-          <SectionHeading
-            eyebrow="Hidden cost"
-            title={costs.headline}
-            subtitle={costs.subheadline}
-          />
+          <p className="mb-4 text-sm font-black uppercase tracking-[0.22em] text-orange-400">
+            Hidden Cost
+          </p>
 
-          <div className="mt-10 grid gap-4">
-            {costs.items.map((item) => (
+          <h2 className="max-w-3xl text-4xl font-black leading-tight tracking-tight text-white sm:text-5xl lg:text-6xl">
+            {costs.headline}
+          </h2>
+
+          <p className="mt-6 max-w-2xl text-lg font-medium leading-9 text-zinc-300 sm:text-xl">
+            {costs.subheadline}
+          </p>
+
+          <div className="mt-9 grid gap-4">
+            {costPoints.map((item, index) => (
               <div
                 key={item.title}
-                className="rounded-3xl border border-white/10 bg-white/[0.04] p-6"
+                className="rounded-3xl border border-white/10 bg-white/[0.04] p-5 transition hover:border-orange-500/40 hover:bg-orange-500/10"
               >
-                <h3 className="text-lg font-black text-white">{item.title}</h3>
-                <p className="mt-3 text-sm leading-7 text-zinc-400">{item.body}</p>
+                <div className="flex gap-4">
+                  <div className="flex size-11 shrink-0 items-center justify-center rounded-2xl bg-orange-500 text-sm font-black text-white">
+                    {index + 1}
+                  </div>
+
+                  <div>
+                    <h3 className="text-xl font-black text-white">
+                      {item.title}
+                    </h3>
+
+                    <p className="mt-2 text-base leading-7 text-zinc-400">
+                      {item.body}
+                    </p>
+                  </div>
+                </div>
               </div>
             ))}
           </div>
 
           <div className="mt-9">
-            <CTAButton href={whatsappUrl} section="cost-of-inaction">
+            <CTAButton href="#fulfilment-form" section="cost-scroll-to-form">
               {ctas.cost}
             </CTAButton>
           </div>
         </div>
 
-        <div className="rounded-[2rem] border border-white/10 bg-zinc-950 p-6 glow-card">
-          <p className="text-sm font-bold uppercase tracking-[0.2em] text-orange-300">
-            One failed delivery can cost more than movement
-          </p>
+        {/* Image visual */}
+        <div className="relative">
+          <div className="absolute -inset-5 rounded-[2.5rem] bg-orange-600/20 blur-3xl" />
 
-          <div className="mt-6 space-y-4">
-            {[
-              ["Customer order", "Won"],
-              ["Rider movement", "Cost"],
-              ["Customer unavailable", "Delay"],
-              ["Returned order", "Loss"],
-              ["Trust damage", "Repeat sale risk"],
-            ].map(([label, value]) => (
-              <div
-                key={label}
-                className="flex items-center justify-between rounded-2xl border border-white/10 bg-white/[0.04] p-4"
-              >
-                <span className="text-sm text-zinc-300">{label}</span>
-                <span className="text-sm font-black text-orange-300">{value}</span>
+          <div className="relative overflow-hidden rounded-[2rem] border border-white/10 bg-zinc-950 p-4 glow-card">
+            <div className="rounded-[1.5rem] border border-white/10 bg-black p-4">
+              <div className="mb-5 flex flex-col gap-2 sm:flex-row sm:items-center sm:justify-between">
+                <div>
+                  <p className="text-xs font-black uppercase tracking-[0.22em] text-orange-400">
+                    Delivery Outcome
+                  </p>
+                  <h3 className="mt-1 text-2xl font-black text-white">
+                    The sale only counts when the customer receives the order.
+                  </h3>
+                </div>
+
+                <span className="w-fit rounded-full bg-orange-500 px-3 py-1 text-xs font-black text-white">
+                  PROOF
+                </span>
               </div>
-            ))}
-          </div>
 
-          <div className="mt-6 rounded-3xl bg-orange-500 p-5 text-black">
-            <p className="text-sm font-black uppercase tracking-[0.2em]">
-              The painful part
-            </p>
-            <p className="mt-2 text-2xl font-black leading-tight">
-              You already did the hard work of getting the sale. Fulfilment is where it starts falling apart.
-            </p>
+              <div className="relative flex min-h-[320px] items-center justify-center overflow-hidden rounded-2xl border border-white/10 bg-zinc-900 p-4 sm:min-h-[420px]">
+                <Image
+                  src="https://ik.imagekit.io/j1e78ujalr/boxify_testimonilas_edited/delivered_succes.png"
+                  alt="Successful delivery proof"
+                  fill
+                  sizes="(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 560px"
+                  className="object-contain p-3"
+                />
+              </div>
+
+              <p className="mt-5 text-center text-sm font-bold leading-7 text-zinc-300">
+                Every smooth delivery protects the trust your ads, product, and
+                brand worked hard to build.
+              </p>
+            </div>
           </div>
         </div>
       </div>

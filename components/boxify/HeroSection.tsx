@@ -15,7 +15,6 @@ const heroStats = [
 
 const heroGalleryImages = [
   {
- 
     src: "https://ik.imagekit.io/j1e78ujalr/rechargablesolarbank/boxifyimg2.jpeg?updatedAt=1774811213794",
     alt: "Boxify ecommerce fulfilment flow",
     label: "Fulfilment Flow",
@@ -50,78 +49,71 @@ export default function HeroSection() {
 
   return (
     <section className="relative overflow-hidden bg-black px-4 pb-16 pt-8 sm:px-6 lg:px-8 lg:pb-24">
-      {/* Lightweight CSS-only background for faster first paint */}
       <div className="pointer-events-none absolute inset-0 bg-[radial-gradient(circle_at_top,rgba(234,88,12,0.24),transparent_42%)]" />
       <div className="pointer-events-none absolute inset-0 bg-[linear-gradient(rgba(255,255,255,0.035)_1px,transparent_1px),linear-gradient(90deg,rgba(255,255,255,0.035)_1px,transparent_1px)] bg-[size:48px_48px]" />
       <div className="pointer-events-none absolute inset-0 bg-[linear-gradient(to_bottom,transparent_0%,#000_94%)]" />
 
-      {/* Navbar */}
-      {/* Navbar */}
-<nav className="relative z-10 mx-auto mb-14 flex max-w-7xl items-center justify-between rounded-full border border-white/10 bg-white/5 px-4 py-3 backdrop-blur">
-  {/* Logo + text wrapper */}
-  <div className="flex items-center gap-2">
-    {/* Logo icon wrapper */}
-    <div className="relative h-11 w-11 shrink-0 overflow-hidden rounded-full bg-white">
-      <Image
-        src="/images/boxify/boxify-logo.png"
-        alt="Boxify logo"
-        fill
-        sizes="44px"
-        className="object-contain p-1"
-        priority
-      />
-    </div>
+      <nav className="relative z-10 mx-auto mb-14 flex max-w-7xl items-center justify-between rounded-full border border-white/10 bg-white/5 px-4 py-3 backdrop-blur">
+        <div className="flex items-center gap-2">
+          <div className="relative h-11 w-11 shrink-0 overflow-hidden rounded-full bg-white">
+            <Image
+              src="/images/boxify/boxify-logo.png"
+              alt="Boxify logo"
+              fill
+              sizes="44px"
+              className="object-contain p-1"
+              priority
+            />
+          </div>
 
-    {/* Brand text */}
-    <div className="flex flex-col justify-center leading-none">
-      <p className="text-base font-black tracking-tight text-white">
-        Boxify
-      </p>
-      <p className="mt-1 text-[11px] font-medium text-zinc-400">
-        Ecommerce Fulfilment
-      </p>
-    </div>
-  </div>
+          <div className="flex flex-col justify-center leading-none">
+            <p className="text-base font-black tracking-tight text-white sm:text-lg">
+              Boxify
+            </p>
+            <p className="mt-1 text-xs font-medium text-zinc-400">
+              Ecommerce Fulfilment
+            </p>
+          </div>
+        </div>
 
-  <CTAButton
-    href={whatsappUrl}
-    section="nav"
-    variant="secondary"
-    className="hidden sm:inline-flex"
-  >
-    {ctas.secondary}
-  </CTAButton>
-</nav>
+        <CTAButton
+          href={whatsappUrl}
+          section="nav"
+          variant="secondary"
+          className="hidden sm:inline-flex"
+        >
+          {ctas.secondary}
+        </CTAButton>
+      </nav>
 
-      {/* Headline-first hero */}
       <div className="relative z-10 mx-auto max-w-6xl text-center">
-        <div className="mx-auto mb-6 inline-flex max-w-3xl rounded-full border border-orange-500/30 bg-orange-500/10 px-4 py-2 text-center text-[11px] font-bold uppercase tracking-[0.18em] text-orange-300 sm:text-xs">
+        <div className="mx-auto mb-6 inline-flex max-w-3xl rounded-full border border-orange-500/30 bg-orange-500/10 px-4 py-2 text-center text-xs font-bold uppercase tracking-[0.18em] text-orange-300 sm:text-sm">
           {hero.eyebrow}
         </div>
 
-        <h1 className="mx-auto max-w-6xl text-balance text-4xl font-black leading-[1.05] tracking-tight text-white sm:text-5xl md:text-6xl lg:text-7xl">
+        <h1 className="mx-auto max-w-6xl text-balance text-4xl font-black leading-[1.05] tracking-tight text-white sm:text-5xl md:text-6xl lg:text-7xl xl:text-8xl">
           {hero.headline}
         </h1>
 
-        <p className="mx-auto mt-7 max-w-3xl text-base leading-8 text-zinc-300 sm:text-lg">
+        <p className="mx-auto mt-7 max-w-4xl text-lg font-medium leading-9 text-zinc-300 sm:text-xl">
           {hero.subheadline}
         </p>
 
-        <div className="mx-auto mt-8 grid max-w-xl grid-cols-1 gap-3 sm:grid-cols-2">
+        <div className="mx-auto mt-9 grid max-w-2xl grid-cols-1 gap-4 sm:grid-cols-2">
           {heroStats.map((stat) => (
             <div
               key={stat.label}
-              className="relative overflow-hidden rounded-3xl border border-white/10 bg-white/[0.06] p-5 text-left"
+              className="relative overflow-hidden rounded-3xl border border-white/10 bg-white/[0.06] p-6 text-left"
             >
-              <div className="absolute right-4 top-4 flex size-3">
+              <div className="absolute right-5 top-5 flex size-3">
                 <span className="absolute inline-flex h-full w-full animate-ping rounded-full bg-orange-400 opacity-75" />
                 <span className="relative inline-flex size-3 rounded-full bg-green-500" />
               </div>
 
-              <p className="text-3xl font-black tracking-tight text-white">
+              <p className="text-4xl font-black tracking-tight text-white sm:text-5xl">
                 {stat.value}
               </p>
-              <p className="mt-1 text-sm font-bold text-zinc-400">
+              <p className="mt-2 text-base font-bold text-zinc-400">
                 {stat.label}
               </p>
             </div>
@@ -147,26 +139,25 @@ export default function HeroSection() {
           </CTAButton>
         </div>
 
-        <p className="mx-auto mt-5 max-w-2xl text-sm leading-7 text-zinc-400">
+        <p className="mx-auto mt-6 max-w-3xl text-base font-medium leading-8 text-zinc-400">
           {hero.trustMicrocopy}
         </p>
       </div>
 
-      {/* Image scroll section */}
       <div className="relative z-10 mx-auto mt-16 max-w-7xl lg:mt-20">
-        <div className="rounded-[2rem] border border-white/10 bg-zinc-950/90 p-4">
-          <div className="mb-4 flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
+        <div className="rounded-[2rem] border border-white/10 bg-zinc-950/90 p-4 sm:p-5">
+          <div className="mb-5 flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
             <div>
-              <p className="text-xs uppercase tracking-[0.2em] text-orange-300">
+              <p className="text-sm font-black uppercase tracking-[0.2em] text-orange-300">
                 Fulfilment Flow
               </p>
-              <h3 className="mt-1 text-xl font-black text-white">
+              <h3 className="mt-2 text-2xl font-black leading-tight text-white sm:text-3xl">
                 Order → Confirm → Pack → Deliver → Report
               </h3>
             </div>
 
-            <div className="w-fit rounded-full bg-orange-500 px-3 py-1 text-xs font-black text-white">
-              BUILT FOR ECOMMERCE
+            <div className="w-fit rounded-full bg-orange-500 px-4 py-2 text-xs font-black uppercase tracking-[0.12em] text-white">
+              Built For Ecommerce
             </div>
           </div>
 
@@ -191,11 +182,11 @@ export default function HeroSection() {
                       />
                     </div>
 
-                    <div className="border-t border-white/10 bg-white/[0.04] p-4">
+                    <div className="border-t border-white/10 bg-white/[0.04] p-5">
                       <p className="text-xs font-black uppercase tracking-[0.18em] text-orange-300">
                         {image.label}
                       </p>
-                      <p className="mt-2 text-sm font-bold leading-6 text-white">
+                      <p className="mt-3 text-base font-black leading-7 text-white">
                         {image.title}
                       </p>
                     </div>
@@ -205,65 +196,65 @@ export default function HeroSection() {
             </div>
           </div>
 
-          <div className="mt-4 grid gap-3 sm:grid-cols-3">
+          <div className="mt-5 grid gap-3 sm:grid-cols-3">
             {supportItems.map((item) => (
               <div
                 key={item}
-                className="rounded-2xl border border-white/10 bg-white/[0.04] p-4"
+                className="rounded-2xl border border-white/10 bg-white/[0.04] p-5"
               >
-                <p className="text-xs text-zinc-400">Boxify support</p>
-                <p className="mt-1 font-bold text-white">{item}</p>
+                <p className="text-sm font-medium text-zinc-400">
+                  Boxify support
+                </p>
+                <p className="mt-2 text-xl font-black text-white">{item}</p>
               </div>
             ))}
           </div>
 
-          <p className="mt-4 text-center text-xs text-zinc-500">
-            From storage to confirmation, delivery, reporting, and remittance — Boxify keeps the order journey connected after the sale.
+          <p className="mx-auto mt-5 max-w-4xl text-center text-base font-medium leading-8 text-zinc-400">
+            From storage to confirmation, delivery, reporting, and remittance —
+            Boxify keeps the order journey connected after the sale.
           </p>
         </div>
       </div>
 
-      {/* What Boxify helps remove section */}
-      <div className="relative z-10 mx-auto mt-10 max-w-7xl">
-        <div className="rounded-[2rem] border border-white/10 bg-white/[0.04] p-5 sm:p-6">
-          <div className="grid gap-8 lg:grid-cols-[0.8fr_1.2fr] lg:items-start">
+      <div className="relative z-10 mx-auto mt-12 max-w-7xl">
+        <div className="rounded-[2rem] border border-white/10 bg-white/[0.04] p-6 sm:p-8">
+          <div className="grid gap-10 lg:grid-cols-[0.8fr_1.2fr] lg:items-start">
             <div>
-              <p className="text-xs font-black uppercase tracking-[0.22em] text-orange-400">
-                What Boxify helps you remove
+              <p className="text-sm font-black uppercase tracking-[0.22em] text-orange-400">
+                What Boxify Helps You Remove
               </p>
 
-              <h2 className="mt-3 max-w-xl text-2xl font-black tracking-tight text-white sm:text-3xl">
-                Remove the fulfilment stress that makes ecommerce feel harder than it should.
+              <h2 className="mt-4 max-w-2xl text-3xl font-black leading-tight tracking-tight text-white sm:text-4xl lg:text-5xl">
+                Remove the fulfilment stress that makes ecommerce feel harder
+                than it should.
               </h2>
 
-              <p className="mt-4 max-w-xl text-sm leading-7 text-zinc-400">
-                Boxify helps ecommerce vendors replace manual dispatch stress with a clearer fulfilment flow for Abuja and Lagos orders.
+              <p className="mt-5 max-w-2xl text-lg font-medium leading-9 text-zinc-400">
+                Boxify helps ecommerce vendors replace manual dispatch stress
+                with a clearer fulfilment flow for Abuja and Lagos orders.
               </p>
             </div>
 
-            <div className="grid gap-3 sm:grid-cols-2">
+            <div className="grid gap-4 sm:grid-cols-2">
               {removalPoints.map((item) => (
                 <div
                   key={item}
-                  className="flex gap-3 rounded-2xl border border-white/10 bg-black/40 p-4"
+                  className="flex gap-4 rounded-2xl border border-white/10 bg-black/40 p-5"
                 >
-                  <span className="mt-1 flex size-5 shrink-0 items-center justify-center rounded-full bg-orange-500 text-xs font-black text-white">
+                  <span className="mt-1 flex size-6 shrink-0 items-center justify-center rounded-full bg-orange-500 text-sm font-black text-white">
                     ✓
                   </span>
 
-                  <p className="text-sm leading-7 text-zinc-300">{item}</p>
+                  <p className="text-base font-medium leading-8 text-zinc-300">
+                    {item}
+                  </p>
                 </div>
               ))}
             </div>
           </div>
         </div>
       </div>
-
-      {/* Important note:
-          Keep 10k+ and 100+ only if those numbers are real.
-          If not confirmed, replace them with safer text like:
-          "Fulfilment-ready" and "Vendor-focused".
-      */}
     </section>
   );
 }
