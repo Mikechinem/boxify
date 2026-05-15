@@ -91,9 +91,9 @@ export default function HeroSection() {
           {hero.eyebrow}
         </div>
 
-        <h1 className="mx-auto max-w-6xl text-balance text-4xl font-black leading-[1.05] tracking-tight text-white sm:text-5xl md:text-6xl lg:text-7xl xl:text-8xl">
-          {hero.headline}
-        </h1>
+        <h1 className="mx-auto max-w-5xl text-balance text-3xl font-black leading-[1.16] tracking-tight text-white sm:text-4xl sm:leading-[1.14] md:text-5xl md:leading-[1.12] lg:text-6xl lg:leading-[1.1]">
+        {hero.headline}
+            </h1>
 
         <p className="mx-auto mt-7 max-w-4xl text-lg font-medium leading-9 text-zinc-300 sm:text-xl">
           {hero.subheadline}
