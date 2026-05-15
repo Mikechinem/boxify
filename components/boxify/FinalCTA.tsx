@@ -38,7 +38,7 @@ export default function FinalCTA() {
           </CTAButton>
         </div>
 
-        <p className="mx-auto mt-10 max-w-3xl rounded-3xl border border-white/10 bg-black p-6 text-sm font-bold leading-7 text-white shadow-[0_20px_70px_rgba(0,0,0,0.45)]">
+        <p className="mx-auto mt-10 max-w-3xl rounded-3xl border border-white/10 bg-black p-6 text-sm font-bold leading-7 text-white/50 shadow-[0_20px_70px_rgba(0,0,0,0.45)]">
         {finalCta.ps}
        </p>
       </div>
