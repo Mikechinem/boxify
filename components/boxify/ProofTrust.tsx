@@ -61,12 +61,6 @@ const proofCards = [
   },
 ];
 
-const trustSignals = [
-  "Customer confirmation before dispatch",
-  "POD support in Abuja and Lagos",
-  "Daily delivery and payment reports",
-  "Fulfilment built for ecommerce vendors",
-];
 
 export default function ProofTrust() {
   const { credibility, ctas } = boxifyData;
@@ -76,22 +70,8 @@ export default function ProofTrust() {
       <SectionHeading
         eyebrow="Join 100+ Winning Vendors"
         title="Real Fulfilment Proof Beats Another Logistics Promise"
-        subtitle="Boxify gives ecommerce vendors the confidence that products, customers, payments, reports, and delivery outcomes are handled through a clearer fulfilment process."
         align="center"
       />
-
-      <div className="mx-auto mt-8 grid max-w-5xl gap-3 sm:grid-cols-2 lg:grid-cols-4">
-        {trustSignals.map((signal) => (
-          <div
-            key={signal}
-            className="rounded-2xl border border-orange-500/20 bg-orange-500/10 p-4 text-center"
-          >
-            <p className="text-sm font-bold leading-6 text-orange-100">
-              {signal}
-            </p>
-          </div>
-        ))}
-      </div>
 
       <div className="mt-14 grid gap-5 sm:grid-cols-2 lg:grid-cols-3">
         {proofCards.map((item, index) => (

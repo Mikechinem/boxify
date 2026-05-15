@@ -45,16 +45,6 @@ export default function OfferStack() {
 
         <LeadForm />
       </div>
-
-      {/* Centered CTA */}
-      <div className="mt-12 flex justify-center">
-        <CTAButton
-          href="#fulfilment-form"
-          section="offer-stack-scroll-to-form"
-        >
-          {ctas.qualification}
-        </CTAButton>
-      </div>
     </SectionWrapper>
   );
 }
