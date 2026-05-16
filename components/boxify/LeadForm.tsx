@@ -5,7 +5,7 @@ import { boxifyData } from "@/data/boxify";
 import { trackLeadClick } from "@/lib/tracking";
 
 export default function LeadForm() {
-  const { whatsappUrl } = boxifyData;
+  const { whatsappChatUrl } = boxifyData;
   const [isSubmitting, setIsSubmitting] = useState(false);
 
   function handleSubmit(event: FormEvent<HTMLFormElement>) {
@@ -29,12 +29,12 @@ Biggest challenge: ${formData.get("challenge")}
 
     trackLeadClick({
       label: "Submit My Fulfilment Request",
-      destination: whatsappUrl,
+      destination: whatsappChatUrl,
       section: "lead-form",
     });
 
     const encodedMessage = encodeURIComponent(message);
-    const finalUrl = `${whatsappUrl}?text=${encodedMessage}`;
+    const finalUrl = `${whatsappChatUrl}?text=${encodedMessage}`;
 
     window.location.href = finalUrl;
   }

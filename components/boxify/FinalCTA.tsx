@@ -2,7 +2,7 @@ import { boxifyData } from "@/data/boxify";
 import CTAButton from "@/components/shared/CTAButton";
 
 export default function FinalCTA() {
-  const { finalCta, ctas, whatsappUrl } = boxifyData;
+  const { finalCta, ctas, whatsappChatUrl } = boxifyData;
 
   return (
     <section className="relative overflow-hidden bg-[#ea580c] px-4 py-20 text-white sm:px-6 lg:px-8">
@@ -21,7 +21,7 @@ export default function FinalCTA() {
 
         <div className="mt-9 flex flex-col justify-center gap-3 sm:flex-row">
           <CTAButton
-            href={whatsappUrl}
+            href={whatsappChatUrl}
             section="final-cta"
             variant="secondary"
             className="w-full border-white/30 bg-black text-white hover:bg-zinc-900 sm:w-auto"
@@ -29,7 +29,7 @@ export default function FinalCTA() {
             {ctas.primaryLong}
           </CTAButton>
           <CTAButton
-            href={whatsappUrl}
+            href={whatsappChatUrl}
             section="final-cta"
             variant="secondary"
             className="w-full border-white/30 bg-white/15 sm:w-auto"

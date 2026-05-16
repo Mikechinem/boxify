@@ -4,7 +4,7 @@ import SectionHeading from "@/components/shared/SectionHeading";
 import SectionWrapper from "@/components/shared/SectionWrapper";
 
 export default function FAQSection() {
-  const { faqs, ctas, whatsappUrl } = boxifyData;
+ const { faqs, ctas } = boxifyData;
 
   return (
     <SectionWrapper className="bg-black">
@@ -35,7 +35,7 @@ export default function FAQSection() {
       </div>
 
       <div className="mt-10 text-center">
-        <CTAButton href={whatsappUrl} section="faq">
+       <CTAButton href="#fulfilment-form" section="faq-scroll-to-form">
           {ctas.qualification}
         </CTAButton>
       </div>

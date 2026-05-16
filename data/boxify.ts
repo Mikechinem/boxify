@@ -1,7 +1,18 @@
 import { WHATSAPP_URL } from "@/lib/constants";
 
+const whatsappButtonMessage = `
+Hello Boxify, I’m interested in your Abuja and Lagos ecommerce fulfilment service.
+
+I want to know if Boxify can help me with warehousing, customer confirmation, packaging, delivery, POD collection, reporting, and remittance for my orders.
+`.trim();
+
+const whatsappChatUrl = `${WHATSAPP_URL}?text=${encodeURIComponent(
+  whatsappButtonMessage
+)}`;
+
 export const boxifyData = {
   whatsappUrl: WHATSAPP_URL,
+  whatsappChatUrl,
 
   ctas: {
     primary: "Set Up My Fulfilment Branch",
@@ -12,7 +23,6 @@ export const boxifyData = {
     cost: "Fix My Fulfilment Process",
     mechanism: "Show Me How This Works For My Business",
   },
-
   hero: {
     eyebrow: "For Nigerian Ecommerce Vendors Selling Physical Products Into Abuja & Lagos",
     headline:

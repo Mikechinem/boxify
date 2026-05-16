@@ -45,7 +45,7 @@ const removalPoints = [
 const supportItems = ["Warehouse", "Call Centre", "Daily Reports"];
 
 export default function HeroSection() {
-  const { hero, ctas, whatsappUrl } = boxifyData;
+  const { hero, ctas, whatsappChatUrl } = boxifyData;
 
   return (
     <section className="relative overflow-hidden bg-black px-4 pb-16 pt-8 sm:px-6 lg:px-8 lg:pb-24">
@@ -77,7 +77,7 @@ export default function HeroSection() {
         </div>
 
         <CTAButton
-          href={whatsappUrl}
+         href={whatsappChatUrl}
           section="nav"
           variant="secondary"
           className="hidden sm:inline-flex"
@@ -130,7 +130,7 @@ export default function HeroSection() {
           </CTAButton>
 
           <CTAButton
-            href={whatsappUrl}
+            href={whatsappChatUrl}
             section="hero-headline"
             variant="secondary"
             className="w-full sm:w-auto"
