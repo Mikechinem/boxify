@@ -1,32 +1,85 @@
 import { WHATSAPP_URL } from "@/lib/constants";
 
-const whatsappButtonMessage = `
-Hello Boxify, I’m interested in your Abuja and Lagos ecommerce fulfilment service.
-
-I want to know if Boxify can help me with warehousing, customer confirmation, packaging, delivery, POD collection, reporting, and remittance for my orders.
-`.trim();
-
-const whatsappChatUrl = `${WHATSAPP_URL}?text=${encodeURIComponent(
-  whatsappButtonMessage
-)}`;
-
 export const boxifyData = {
+  /**
+   * Kept for compatibility.
+   * Direct WhatsApp links should no longer be used by normal CTA buttons.
+   * The modal/API flow will build the final WhatsApp URL after MailerLite submission.
+   */
   whatsappUrl: WHATSAPP_URL,
-  whatsappChatUrl,
+  whatsappChatUrl: WHATSAPP_URL,
 
   ctas: {
-    primary: "Set Up My Fulfilment Branch",
-    primaryLong: "Set Up My Abuja & Lagos Fulfilment Branch",
-    secondary: "Chat With Boxify On WhatsApp",
-    qualification: "Check If Boxify Can Handle My Orders",
-    problem: "Stop Letting Delivery Kill The Sale",
-    cost: "Fix My Fulfilment Process",
-    mechanism: "Show Me How This Works For My Business",
+    primary: "Check If Boxify Can Handle My Fulfilment",
+    primaryLong: "Check If Boxify Can Handle My Abuja & Lagos Fulfilment",
+    secondary: "Start My Fulfilment Request",
+    qualification: "Check If Boxify Can Handle My Fulfilment",
+    problem: "Check If Delivery Is Killing My Sales",
+    cost: "Check My Fulfilment Fit",
+    mechanism: "Prepare My Fulfilment Request",
+    modalSubmit: "Submit & Continue To WhatsApp",
   },
+
+  modal: {
+    eyebrow: "Fulfilment Request",
+    title: "Let’s Check If Boxify Can Handle Your Fulfilment",
+    subtitle:
+      "Answer these quick questions so we understand your product type, order volume, and whether you need Abuja, Lagos, or both. After submitting, WhatsApp will open with your request already prepared.",
+    filterCopy:
+      "Boxify is best for ecommerce vendors already selling physical products and looking for a clearer way to handle fulfilment in Abuja and Lagos.",
+    consent:
+      "By submitting, you agree that Boxify can receive your request details and contact you about fulfilment support. After your request is saved, WhatsApp will open with your message already prepared.",
+    closeLabel: "Close fulfilment request modal",
+    loadingText: "Submitting your request...",
+    errorMessage:
+      "We could not submit your request yet. Please check your details and try again.",
+    successRedirectText: "Request saved. Opening WhatsApp...",
+    fields: {
+      name: "Your name",
+      email: "Email address",
+      whatsappNumber: "WhatsApp number",
+      businessName: "Business name",
+      productCategory: "What do you sell?",
+      fulfilmentLocation: "Where do you need fulfilment?",
+      averageOrders: "Average orders per week",
+      podNeed: "Do you need POD/cash collection?",
+      deliveryChallenge: "Biggest delivery challenge right now",
+    },
+    placeholders: {
+      name: "Example: Michael",
+      email: "Example: michael@email.com",
+      whatsappNumber: "Example: 08012345678",
+      businessName: "Example: Mike Stores",
+      productCategory: "Example: fashion, skincare, gadgets...",
+      deliveryChallenge:
+        "Example: failed delivery, rider chasing, POD stress, late delivery...",
+    },
+    fulfilmentLocationOptions: [
+      "Abuja",
+      "Lagos",
+      "Abuja and Lagos",
+      "Not sure yet",
+    ],
+    averageOrdersOptions: [
+      "1–10 orders per week",
+      "11–30 orders per week",
+      "31–100 orders per week",
+      "100+ orders per week",
+    ],
+    podNeedOptions: [
+      "Yes, Abuja",
+      "Yes, Lagos",
+      "Yes, Abuja and Lagos",
+      "No",
+      "Not sure yet",
+    ],
+    leadSource: "Boxify landing page",
+  },
+
   hero: {
     eyebrow: "For Nigerian Ecommerce Vendors Selling Physical Products Into Abuja & Lagos",
     headline:
-      "Turn Abuja & Lagos Into Your Local Fulfilment Zones Without Renting A Warehouse, Hiring Riders, Or Chasing Deliveries All Day.",
+      "Turn Abuja & Lagos Into Your Local Fulfilment Zones — Without Renting A Warehouse, Hiring Riders, Or Chasing Deliveries All Day.",
     subheadline:
       "Boxify helps ecommerce brands store products, confirm customers, package orders, deliver fast, collect cash-on-delivery in Abuja and Lagos, send daily reports, and remit payment — so delivery stops killing the sales you worked hard to get.",
     bullets: [
@@ -53,7 +106,8 @@ export const boxifyData = {
   },
 
   problems: {
-    headline: "Your Product Is Not The Problem. Your Delivery System Is What’s Making You Look Unserious.",
+    headline:
+      "Your Product Is Not The Problem. Your Delivery System Is What’s Making You Look Unserious.",
     copy:
       "A customer places an order. Then the real work begins. You confirm pickup, send details, wait for updates, call again, manage address issues, settle delivery fee arguments, and answer the customer asking, “Where is my order?”",
     cards: [
@@ -115,7 +169,8 @@ export const boxifyData = {
   },
 
   solution: {
-    headline: "Meet Boxify: Your Abuja & Lagos Fulfilment Branch Without The Cost Of Setting Up One.",
+    headline:
+      "Meet Boxify: Your Abuja & Lagos Fulfilment Branch Without The Cost Of Setting Up One.",
     subheadline:
       "Boxify gives ecommerce vendors a local fulfilment system in Abuja and Lagos — so you can serve customers faster without renting space, hiring staff, managing riders, or handling every order manually.",
     body:
@@ -154,8 +209,7 @@ export const boxifyData = {
     },
     {
       title: "Rider Delivers To The Customer",
-      body:
-        "The order is moved to the customer with local fulfilment support.",
+      body: "The order is moved to the customer with local fulfilment support.",
     },
     {
       title: "Cash-On-Delivery Is Collected In Abuja & Lagos",
@@ -192,7 +246,8 @@ export const boxifyData = {
     },
     {
       usual: "Failed delivery becomes your headache",
-      boxify: "Returns and delivery outcomes are handled within the fulfilment flow",
+      boxify:
+        "Returns and delivery outcomes are handled within the fulfilment flow",
     },
     {
       usual: "You look far from the customer",
@@ -269,8 +324,7 @@ export const boxifyData = {
     },
     {
       title: "Cash-On-Delivery Collection",
-      body:
-        "Support POD/cash collection for Abuja and Lagos orders.",
+      body: "Support POD/cash collection for Abuja and Lagos orders.",
     },
     {
       title: "Daily Reports",
@@ -279,8 +333,7 @@ export const boxifyData = {
     },
     {
       title: "Remittance",
-      body:
-        "Receive collected payments based on the agreed remittance schedule.",
+      body: "Receive collected payments based on the agreed remittance schedule.",
     },
     {
       title: "Returns Support",
@@ -298,9 +351,9 @@ export const boxifyData = {
     headline: "See What Ecommerce Vendors Are Saying",
     subheadline: "Real conversations. Real delivery problems. Real fulfilment support.",
     placeholders: [
-      "Add WhatsApp screenshot showing orders fulfilled successfully.",
-      "Add payment remittance confirmation screenshot.",
-      "Add customer delivery confirmation screenshot.",
+      "Orders fulfilled successfully.",
+      "Payment remittance confirmation.",
+      "Customer delivery confirmation.",
     ],
   },
 
@@ -406,8 +459,7 @@ export const boxifyData = {
     },
     {
       question: "Does Boxify support cash-on-delivery?",
-      answer:
-        "Yes, for Abuja and Lagos orders.",
+      answer: "Yes, for Abuja and Lagos orders.",
     },
     {
       question: "Can Boxify help if I sell from Instagram or WhatsApp?",
@@ -427,7 +479,7 @@ export const boxifyData = {
     {
       question: "What is the first step?",
       answer:
-        "Click the button, fill the short form or chat on WhatsApp, and Boxify will confirm if your product type, location, and order volume fit the fulfilment process.",
+        "Click the button, submit the short fulfilment request, and WhatsApp will open with your details already prepared so Boxify can confirm if your product type, location, and order volume fit the fulfilment process.",
     },
   ],
 
@@ -436,6 +488,6 @@ export const boxifyData = {
     body:
       "You have already done the hard part. You found the customer. You sold the product. You got the order. Now the order needs to arrive fast, safely, and professionally.",
     ps:
-      "P.S. The longer your delivery process stays manual, the more every new order adds pressure to your business. Fix fulfilment now, and your next sale has a better chance of becoming a happy customer, repeat buyer, and trusted brand experience. With love Boxify💌",
+      "P.S. The longer your delivery process stays manual, the more every new order adds pressure to your business. Fix fulfilment now, and your next sale has a better chance of becoming a happy customer, repeat buyer, and trusted brand experience.",
   },
 };

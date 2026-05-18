@@ -45,7 +45,10 @@ export default function BenefitCards() {
       </div>
 
       <div className="mt-12 text-center">
-        <CTAButton href="#fulfilment-form" section="benefits-scroll-to-form">
+        <CTAButton
+          href="#fulfilment-request-modal"
+          section="benefits-open-modal"
+        >
           I Want This Fulfilment System
         </CTAButton>
       </div>

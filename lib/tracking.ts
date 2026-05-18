@@ -7,33 +7,50 @@ declare global {
   }
 }
 
-type LeadClickPayload = {
-  label: string;
-  destination: string;
-  section?: string;
-};
-
 type AttributionData = {
-  utm_source?: string;
-  utm_medium?: string;
-  utm_campaign?: string;
-  utm_content?: string;
-  utm_term?: string;
-  utm_id?: string;
-  utm_source_platform?: string;
+  landingPage?: string;
+  currentUrl?: string;
+  referrer?: string;
+  capturedAt?: string;
+  utmSource?: string;
+  utmMedium?: string;
+  utmCampaign?: string;
+  utmContent?: string;
+  utmTerm?: string;
+  utmId?: string;
+  utmSourcePlatform?: string;
   fbclid?: string;
   gclid?: string;
   msclkid?: string;
   ttclid?: string;
-  landing_page?: string;
-  current_url?: string;
-  referrer?: string;
-  captured_at?: string;
 };
 
-const LEAD_STORAGE_KEY = "boxify_whatsapp_lead_tracked_at";
+type CtaPayload = {
+  label: string;
+  section?: string;
+  destination?: string;
+};
+
+type LeadPayload = {
+  eventId: string;
+  label: string;
+  section?: string;
+  email?: string;
+  fulfilmentLocation?: string;
+  averageOrders?: string;
+  podNeed?: string;
+};
+
+type WhatsAppRedirectPayload = {
+  eventId: string;
+  label: string;
+  section?: string;
+  destination: string;
+};
+
 const FIRST_TOUCH_KEY = "boxify_first_touch_attribution";
 const LATEST_TOUCH_KEY = "boxify_latest_touch_attribution";
+const LEAD_STORAGE_KEY = "boxify_mailerlite_lead_tracked_at";
 const LEAD_EXPIRY_HOURS = 24;
 
 const TRACKING_PARAM_KEYS = [
@@ -51,6 +68,8 @@ const TRACKING_PARAM_KEYS = [
 ] as const;
 
 function safeLocalStorageGet(key: string) {
+  if (typeof window === "undefined") return null;
+
   try {
     return window.localStorage.getItem(key);
   } catch {
@@ -59,10 +78,12 @@ function safeLocalStorageGet(key: string) {
 }
 
 function safeLocalStorageSet(key: string, value: string) {
+  if (typeof window === "undefined") return;
+
   try {
     window.localStorage.setItem(key, value);
   } catch {
-    // Ignore storage errors so tracking never breaks the page.
+    // Tracking should never break the page.
   }
 }
 
@@ -79,18 +100,46 @@ function getCookie(name: string) {
   return undefined;
 }
 
-function createEventId(eventName: string) {
-  if (typeof crypto !== "undefined" && "randomUUID" in crypto) {
-    return `${eventName}_${crypto.randomUUID()}`;
-  }
+function buildFbcFromFbclid(fbclid?: string) {
+  if (!fbclid) return undefined;
 
-  return `${eventName}_${Date.now()}_${Math.random().toString(36).slice(2)}`;
+  return `fb.1.${Date.now()}.${fbclid}`;
+}
+
+function toCamelAttribution(raw: Record<string, string | undefined>): AttributionData {
+  return {
+    landingPage: raw.landing_page,
+    currentUrl: raw.current_url,
+    referrer: raw.referrer,
+    capturedAt: raw.captured_at,
+    utmSource: raw.utm_source,
+    utmMedium: raw.utm_medium,
+    utmCampaign: raw.utm_campaign,
+    utmContent: raw.utm_content,
+    utmTerm: raw.utm_term,
+    utmId: raw.utm_id,
+    utmSourcePlatform: raw.utm_source_platform,
+    fbclid: raw.fbclid,
+    gclid: raw.gclid,
+    msclkid: raw.msclkid,
+    ttclid: raw.ttclid,
+  };
+}
+
+function removeEmptyValues<T extends Record<string, unknown>>(obj: T) {
+  return Object.fromEntries(
+    Object.entries(obj).filter(([, value]) => {
+      return value !== undefined && value !== null && value !== "";
+    })
+  );
 }
 
 function getCurrentAttribution(): AttributionData {
+  if (typeof window === "undefined") return {};
+
   const url = new URL(window.location.href);
 
-  const attribution: AttributionData = {
+  const raw: Record<string, string | undefined> = {
     landing_page: `${url.origin}${url.pathname}`,
     current_url: window.location.href,
     referrer: document.referrer || undefined,
@@ -101,15 +150,27 @@ function getCurrentAttribution(): AttributionData {
     const value = url.searchParams.get(key);
 
     if (value) {
-      attribution[key] = value;
+      raw[key] = value;
     }
   });
 
-  return attribution;
+  return toCamelAttribution(raw);
 }
 
 function hasTrackableParams(attribution: AttributionData) {
-  return TRACKING_PARAM_KEYS.some((key) => Boolean(attribution[key]));
+  return Boolean(
+    attribution.utmSource ||
+      attribution.utmMedium ||
+      attribution.utmCampaign ||
+      attribution.utmContent ||
+      attribution.utmTerm ||
+      attribution.utmId ||
+      attribution.utmSourcePlatform ||
+      attribution.fbclid ||
+      attribution.gclid ||
+      attribution.msclkid ||
+      attribution.ttclid
+  );
 }
 
 function parseStoredAttribution(key: string): AttributionData {
@@ -122,61 +183,6 @@ function parseStoredAttribution(key: string): AttributionData {
   } catch {
     return {};
   }
-}
-
-export function captureAttributionFromCurrentUrl() {
-  if (typeof window === "undefined") return;
-
-  const currentAttribution = getCurrentAttribution();
-
-  const existingFirstTouch = safeLocalStorageGet(FIRST_TOUCH_KEY);
-
-  if (!existingFirstTouch) {
-    safeLocalStorageSet(FIRST_TOUCH_KEY, JSON.stringify(currentAttribution));
-  }
-
-  const existingLatestTouch = safeLocalStorageGet(LATEST_TOUCH_KEY);
-
-  if (hasTrackableParams(currentAttribution) || !existingLatestTouch) {
-    safeLocalStorageSet(LATEST_TOUCH_KEY, JSON.stringify(currentAttribution));
-  }
-}
-
-function getAttributionPayload() {
-  captureAttributionFromCurrentUrl();
-
-  const firstTouch = parseStoredAttribution(FIRST_TOUCH_KEY);
-  const latestTouch = parseStoredAttribution(LATEST_TOUCH_KEY);
-
-  return {
-    first_utm_source: firstTouch.utm_source || "",
-    first_utm_medium: firstTouch.utm_medium || "",
-    first_utm_campaign: firstTouch.utm_campaign || "",
-    first_utm_content: firstTouch.utm_content || "",
-    first_utm_term: firstTouch.utm_term || "",
-    first_utm_id: firstTouch.utm_id || "",
-    first_utm_source_platform: firstTouch.utm_source_platform || "",
-    first_fbclid: firstTouch.fbclid || "",
-    first_gclid: firstTouch.gclid || "",
-    first_msclkid: firstTouch.msclkid || "",
-    first_ttclid: firstTouch.ttclid || "",
-
-    latest_utm_source: latestTouch.utm_source || "",
-    latest_utm_medium: latestTouch.utm_medium || "",
-    latest_utm_campaign: latestTouch.utm_campaign || "",
-    latest_utm_content: latestTouch.utm_content || "",
-    latest_utm_term: latestTouch.utm_term || "",
-    latest_utm_id: latestTouch.utm_id || "",
-    latest_utm_source_platform: latestTouch.utm_source_platform || "",
-    latest_fbclid: latestTouch.fbclid || "",
-    latest_gclid: latestTouch.gclid || "",
-    latest_msclkid: latestTouch.msclkid || "",
-    latest_ttclid: latestTouch.ttclid || "",
-
-    landing_page: firstTouch.landing_page || "",
-    current_url: window.location.href,
-    referrer: firstTouch.referrer || document.referrer || "",
-  };
 }
 
 function hasTrackedLeadRecently() {
@@ -199,58 +205,208 @@ function markLeadAsTracked() {
   safeLocalStorageSet(LEAD_STORAGE_KEY, String(Date.now()));
 }
 
-export function isWhatsAppDestination(destination: string) {
-  return (
-    destination.includes("wa.me") ||
-    destination.includes("whatsapp.com") ||
-    destination.includes("api.whatsapp.com")
-  );
+function getAttributionEventPayload() {
+  if (typeof window === "undefined") return {};
+
+  const firstTouch = parseStoredAttribution(FIRST_TOUCH_KEY);
+  const latestTouch = parseStoredAttribution(LATEST_TOUCH_KEY);
+
+  return removeEmptyValues({
+    first_utm_source: firstTouch.utmSource,
+    first_utm_medium: firstTouch.utmMedium,
+    first_utm_campaign: firstTouch.utmCampaign,
+    first_utm_content: firstTouch.utmContent,
+    first_utm_term: firstTouch.utmTerm,
+    first_utm_id: firstTouch.utmId,
+    first_utm_source_platform: firstTouch.utmSourcePlatform,
+    first_fbclid: firstTouch.fbclid,
+    first_gclid: firstTouch.gclid,
+    first_msclkid: firstTouch.msclkid,
+    first_ttclid: firstTouch.ttclid,
+
+    latest_utm_source: latestTouch.utmSource,
+    latest_utm_medium: latestTouch.utmMedium,
+    latest_utm_campaign: latestTouch.utmCampaign,
+    latest_utm_content: latestTouch.utmContent,
+    latest_utm_term: latestTouch.utmTerm,
+    latest_utm_id: latestTouch.utmId,
+    latest_utm_source_platform: latestTouch.utmSourcePlatform,
+    latest_fbclid: latestTouch.fbclid,
+    latest_gclid: latestTouch.gclid,
+    latest_msclkid: latestTouch.msclkid,
+    latest_ttclid: latestTouch.ttclid,
+
+    landing_page: firstTouch.landingPage,
+    current_url: window.location.href,
+    referrer: firstTouch.referrer || document.referrer,
+  });
 }
 
-function buildFbcFromFbclid(fbclid?: string) {
-  if (!fbclid) return undefined;
+export function buildLeadEventId() {
+  if (typeof crypto !== "undefined" && "randomUUID" in crypto) {
+    return `boxify_lead_${crypto.randomUUID()}`;
+  }
 
-  return `fb.1.${Date.now()}.${fbclid}`;
+  return `boxify_lead_${Date.now()}_${Math.random().toString(36).slice(2)}`;
 }
 
-export function trackLeadClick(payload: LeadClickPayload) {
+export function captureAttributionFromCurrentUrl() {
+  if (typeof window === "undefined") return;
+
+  const currentAttribution = getCurrentAttribution();
+
+  const existingFirstTouch = safeLocalStorageGet(FIRST_TOUCH_KEY);
+
+  if (!existingFirstTouch) {
+    safeLocalStorageSet(FIRST_TOUCH_KEY, JSON.stringify(currentAttribution));
+  }
+
+  const existingLatestTouch = safeLocalStorageGet(LATEST_TOUCH_KEY);
+
+  if (hasTrackableParams(currentAttribution) || !existingLatestTouch) {
+    safeLocalStorageSet(LATEST_TOUCH_KEY, JSON.stringify(currentAttribution));
+  }
+}
+
+export function getAttributionData(): AttributionData {
+  if (typeof window === "undefined") return {};
+
+  captureAttributionFromCurrentUrl();
+
+  const firstTouch = parseStoredAttribution(FIRST_TOUCH_KEY);
+  const latestTouch = parseStoredAttribution(LATEST_TOUCH_KEY);
+
+  return removeEmptyValues({
+    landingPage: firstTouch.landingPage || latestTouch.landingPage,
+    currentUrl: window.location.href,
+    referrer: firstTouch.referrer || latestTouch.referrer || document.referrer,
+
+    utmSource: latestTouch.utmSource || firstTouch.utmSource,
+    utmMedium: latestTouch.utmMedium || firstTouch.utmMedium,
+    utmCampaign: latestTouch.utmCampaign || firstTouch.utmCampaign,
+    utmContent: latestTouch.utmContent || firstTouch.utmContent,
+    utmTerm: latestTouch.utmTerm || firstTouch.utmTerm,
+    utmId: latestTouch.utmId || firstTouch.utmId,
+    utmSourcePlatform:
+      latestTouch.utmSourcePlatform || firstTouch.utmSourcePlatform,
+
+    fbclid: latestTouch.fbclid || firstTouch.fbclid,
+    gclid: latestTouch.gclid || firstTouch.gclid,
+    msclkid: latestTouch.msclkid || firstTouch.msclkid,
+    ttclid: latestTouch.ttclid || firstTouch.ttclid,
+  }) as AttributionData;
+}
+
+/**
+ * CTA click is only an intent signal.
+ * It must NOT be counted as a Lead.
+ */
+export function trackCtaClick(payload: CtaPayload) {
   if (typeof window === "undefined") return;
 
   captureAttributionFromCurrentUrl();
 
-  const isWhatsAppClick = isWhatsAppDestination(payload.destination);
-
-  if (!isWhatsAppClick) return;
-
-  const attributionPayload = getAttributionPayload();
-  const alreadyTrackedLead = hasTrackedLeadRecently();
-
   const eventPayload = {
-    event_category: "lead",
+    event_category: "engagement",
     event_label: payload.label,
-    destination: payload.destination,
-    section: payload.section || "unknown",
     button_text: payload.label,
     button_location: payload.section || "unknown",
-    conversion_channel: "whatsapp",
+    destination: payload.destination || "fulfilment_request_modal",
+    ...getAttributionEventPayload(),
+  };
+
+  window.fbq?.("trackCustom", "BoxifyCTAClick", eventPayload);
+
+  window.gtag?.("event", "boxify_cta_click", eventPayload);
+}
+
+/**
+ * Modal open is also an intent signal.
+ * It must NOT be counted as a Lead.
+ */
+export function trackModalOpen(payload: CtaPayload) {
+  if (typeof window === "undefined") return;
+
+  captureAttributionFromCurrentUrl();
+
+  const eventPayload = {
+    event_category: "engagement",
+    event_label: payload.label,
+    button_text: payload.label,
+    button_location: payload.section || "unknown",
+    modal_name: "Boxify Fulfilment Request",
+    ...getAttributionEventPayload(),
+  };
+
+  window.fbq?.("trackCustom", "BoxifyFulfilmentModalOpen", eventPayload);
+
+  window.gtag?.("event", "boxify_fulfilment_modal_open", eventPayload);
+}
+
+/**
+ * Form submit attempt is still not a Lead.
+ * It only tells us the user tried submitting the modal.
+ */
+export function trackModalSubmitAttempt(payload: LeadPayload) {
+  if (typeof window === "undefined") return;
+
+  const eventPayload = {
+    event_category: "form",
+    event_label: payload.label,
+    event_id: payload.eventId,
+    button_text: payload.label,
+    button_location: payload.section || "unknown",
+    fulfilment_location: payload.fulfilmentLocation,
+    average_orders: payload.averageOrders,
+    pod_need: payload.podNeed,
+    ...getAttributionEventPayload(),
+  };
+
+  window.fbq?.("trackCustom", "BoxifyFulfilmentSubmitAttempt", eventPayload);
+
+  window.gtag?.("event", "boxify_fulfilment_submit_attempt", eventPayload);
+}
+
+/**
+ * This is the REAL lead event.
+ * Only call this after MailerLite successfully saves the subscriber.
+ */
+export function trackLeadAfterMailerLiteSuccess(payload: LeadPayload) {
+  if (typeof window === "undefined") return;
+
+  const attributionPayload = getAttributionEventPayload();
+
+  const eventPayload = {
+    content_name: "Boxify Fulfilment Request",
+    content_category: "Boxify Landing Page",
+    event_label: payload.label,
+    button_text: payload.label,
+    button_location: payload.section || "unknown",
+    conversion_channel: "mailerlite_to_whatsapp",
+    fulfilment_location: payload.fulfilmentLocation,
+    average_orders: payload.averageOrders,
+    pod_need: payload.podNeed,
+    lead_storage: "mailerlite",
     ...attributionPayload,
   };
 
+  const alreadyTrackedLead = hasTrackedLeadRecently();
+
   if (alreadyTrackedLead) {
-    window.fbq?.("trackCustom", "WhatsAppCTARepeatClick", {
+    window.fbq?.("trackCustom", "BoxifyLeadRepeatSubmit", {
       ...eventPayload,
+      event_id: payload.eventId,
       lead_counted: false,
     });
 
-    window.gtag?.("event", "whatsapp_cta_repeat_click", {
+    window.gtag?.("event", "boxify_lead_repeat_submit", {
       ...eventPayload,
+      event_id: payload.eventId,
       lead_counted: false,
     });
 
     return;
   }
-
-  const eventId = createEventId("lead");
 
   markLeadAsTracked();
 
@@ -258,23 +414,17 @@ export function trackLeadClick(payload: LeadClickPayload) {
     "track",
     "Lead",
     {
-      content_name: payload.label,
-      content_category: "Boxify Landing Page",
-      destination: payload.destination,
-      section: payload.section || "unknown",
-      button_text: payload.label,
-      button_location: payload.section || "unknown",
-      conversion_channel: "whatsapp",
-      ...attributionPayload,
+      ...eventPayload,
+      lead_counted: true,
     },
     {
-      eventID: eventId,
+      eventID: payload.eventId,
     }
   );
 
   window.gtag?.("event", "generate_lead", {
     ...eventPayload,
-    event_id: eventId,
+    event_id: payload.eventId,
     lead_counted: true,
   });
 
@@ -285,16 +435,12 @@ export function trackLeadClick(payload: LeadClickPayload) {
   const fbc = getCookie("_fbc") || buildFbcFromFbclid(latestTouch.fbclid);
 
   const serverPayload = {
-    eventId,
+    eventId: payload.eventId,
     eventName: "Lead",
     eventSourceUrl: window.location.href,
     fbp,
     fbc,
-    customData: {
-      content_name: payload.label,
-      content_category: "Boxify Landing Page",
-      ...eventPayload,
-    },
+    customData: eventPayload,
   };
 
   const blob = new Blob([JSON.stringify(serverPayload)], {
@@ -314,6 +460,29 @@ export function trackLeadClick(payload: LeadClickPayload) {
     body: JSON.stringify(serverPayload),
     keepalive: true,
   }).catch(() => {
-    // Fail silently so tracking never blocks the WhatsApp click.
+    // Fail silently so tracking never blocks the user.
   });
+}
+
+/**
+ * This tracks the redirect after the lead has been saved.
+ * It is not the Lead event itself.
+ */
+export function trackWhatsAppRedirect(payload: WhatsAppRedirectPayload) {
+  if (typeof window === "undefined") return;
+
+  const eventPayload = {
+    event_category: "redirect",
+    event_label: payload.label,
+    event_id: payload.eventId,
+    button_text: payload.label,
+    button_location: payload.section || "unknown",
+    destination: payload.destination,
+    conversion_channel: "whatsapp",
+    ...getAttributionEventPayload(),
+  };
+
+  window.fbq?.("trackCustom", "BoxifyWhatsAppRedirect", eventPayload);
+
+  window.gtag?.("event", "boxify_whatsapp_redirect", eventPayload);
 }

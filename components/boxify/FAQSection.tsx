@@ -4,7 +4,7 @@ import SectionHeading from "@/components/shared/SectionHeading";
 import SectionWrapper from "@/components/shared/SectionWrapper";
 
 export default function FAQSection() {
- const { faqs, ctas } = boxifyData;
+  const { faqs, ctas } = boxifyData;
 
   return (
     <SectionWrapper className="bg-black">
@@ -29,13 +29,19 @@ export default function FAQSection() {
                 </span>
               </div>
             </summary>
-            <p className="mt-4 text-sm leading-7 text-zinc-400">{item.answer}</p>
+
+            <p className="mt-4 text-sm leading-7 text-zinc-400">
+              {item.answer}
+            </p>
           </details>
         ))}
       </div>
 
       <div className="mt-10 text-center">
-       <CTAButton href="#fulfilment-form" section="faq-scroll-to-form">
+        <CTAButton
+          href="#fulfilment-request-modal"
+          section="faq-open-modal"
+        >
           {ctas.qualification}
         </CTAButton>
       </div>

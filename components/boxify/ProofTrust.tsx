@@ -61,9 +61,8 @@ const proofCards = [
   },
 ];
 
-
 export default function ProofTrust() {
-  const { credibility, ctas } = boxifyData;
+  const { ctas } = boxifyData;
 
   return (
     <SectionWrapper className="bg-zinc-950">
@@ -121,7 +120,10 @@ export default function ProofTrust() {
         </p>
 
         <div className="mt-7 flex justify-center">
-          <CTAButton href="#fulfilment-form" section="proof-scroll-to-form">
+          <CTAButton
+            href="#fulfilment-request-modal"
+            section="proof-open-modal"
+          >
             {ctas.qualification}
           </CTAButton>
         </div>

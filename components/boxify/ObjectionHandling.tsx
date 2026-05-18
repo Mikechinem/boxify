@@ -23,12 +23,16 @@ export default function ObjectionHandling() {
             <summary className="cursor-pointer list-none text-lg font-black text-white">
               <div className="flex items-center justify-between gap-4">
                 <span>{item.question}</span>
+
                 <span className="flex size-8 shrink-0 items-center justify-center rounded-full bg-orange-500 text-sm text-white group-open:rotate-45">
                   +
                 </span>
               </div>
             </summary>
-            <p className="mt-4 text-sm leading-7 text-zinc-300">{item.answer}</p>
+
+            <p className="mt-4 text-sm leading-7 text-zinc-300">
+              {item.answer}
+            </p>
           </details>
         ))}
       </div>

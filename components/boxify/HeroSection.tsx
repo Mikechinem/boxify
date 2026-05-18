@@ -45,7 +45,7 @@ const removalPoints = [
 const supportItems = ["Warehouse", "Call Centre", "Daily Reports"];
 
 export default function HeroSection() {
-  const { hero, ctas, whatsappChatUrl } = boxifyData;
+  const { hero, ctas } = boxifyData;
 
   return (
     <section className="relative overflow-hidden bg-black px-4 pb-16 pt-8 sm:px-6 lg:px-8 lg:pb-24">
@@ -77,12 +77,11 @@ export default function HeroSection() {
         </div>
 
         <CTAButton
-         href={whatsappChatUrl}
           section="nav"
           variant="secondary"
           className="hidden sm:inline-flex"
         >
-          {ctas.secondary}
+          {ctas.qualification}
         </CTAButton>
       </nav>
 
@@ -92,8 +91,8 @@ export default function HeroSection() {
         </div>
 
         <h1 className="mx-auto max-w-5xl text-balance text-3xl font-black leading-[1.16] tracking-tight text-white sm:text-4xl sm:leading-[1.14] md:text-5xl md:leading-[1.12] lg:text-6xl lg:leading-[1.1]">
-        {hero.headline}
-            </h1>
+          {hero.headline}
+        </h1>
 
         <p className="mx-auto mt-7 max-w-4xl text-lg font-medium leading-9 text-zinc-300 sm:text-xl">
           {hero.subheadline}
@@ -122,16 +121,14 @@ export default function HeroSection() {
 
         <div className="mt-9 flex flex-col justify-center gap-3 sm:flex-row">
           <CTAButton
-            href="#fulfilment-form"
-            section="hero-scroll-to-form"
+            section="hero-primary"
             className="w-full sm:w-auto"
           >
             {ctas.primary}
           </CTAButton>
 
           <CTAButton
-            href={whatsappChatUrl}
-            section="hero-headline"
+            section="hero-secondary"
             variant="secondary"
             className="w-full sm:w-auto"
           >

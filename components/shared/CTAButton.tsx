@@ -1,14 +1,9 @@
 "use client";
 
-import Link from "next/link";
-import {
-  captureAttributionFromCurrentUrl,
-  isWhatsAppDestination,
-  trackLeadClick,
-} from "@/lib/tracking";
+import { captureAttributionFromCurrentUrl, trackCtaClick } from "@/lib/tracking";
 
 type CTAButtonProps = {
-  href: string;
+  href?: string;
   children: React.ReactNode;
   section: string;
   variant?: "primary" | "secondary" | "ghost";
@@ -16,17 +11,14 @@ type CTAButtonProps = {
 };
 
 export default function CTAButton({
-  href,
+  href = "#fulfilment-request-modal",
   children,
   section,
   variant = "primary",
   className = "",
 }: CTAButtonProps) {
-  const isInternalAnchor = href.startsWith("#");
-  const isWhatsAppLink = isWhatsAppDestination(href);
-
   const baseClass =
-    "inline-flex items-center justify-center rounded-full px-6 py-3 text-sm font-bold transition duration-200 focus:outline-none focus:ring-2 focus:ring-orange-500 focus:ring-offset-2 focus:ring-offset-black";
+    "inline-flex cursor-pointer select-none items-center justify-center rounded-full px-6 py-3 text-sm font-bold transition duration-200 focus:outline-none focus:ring-2 focus:ring-orange-500 focus:ring-offset-2 focus:ring-offset-black";
 
   const variants = {
     primary:
@@ -41,43 +33,37 @@ export default function CTAButton({
     return typeof children === "string" ? children : "Boxify CTA";
   }
 
-  function handleClick(event: React.MouseEvent<HTMLAnchorElement>) {
+  function handleClick() {
+    const label = getButtonLabel();
+
     captureAttributionFromCurrentUrl();
 
-    if (isWhatsAppLink) {
-      trackLeadClick({
-        label: getButtonLabel(),
-        destination: href,
-        section,
-      });
+    try {
+      window.sessionStorage.setItem(
+        "boxify_modal_source",
+        JSON.stringify({
+          sourceSection: section,
+          sourceLabel: label,
+        })
+      );
+    } catch {
+      // Do nothing. Modal still opens through the hash link.
     }
 
-    if (isInternalAnchor) {
-      event.preventDefault();
-
-      const target = document.querySelector(href);
-
-      if (target) {
-        target.scrollIntoView({
-          behavior: "smooth",
-          block: "start",
-        });
-
-        const nextUrl = `${window.location.pathname}${window.location.search}${href}`;
-        window.history.pushState(null, "", nextUrl);
-      }
-    }
+    trackCtaClick({
+      label,
+      section,
+      destination: href,
+    });
   }
 
   return (
-    <Link
+    <a
       href={href}
-      target={isInternalAnchor ? undefined : "_blank"}
-      rel={isInternalAnchor ? undefined : "noopener noreferrer"}
       onClick={handleClick}
       className={`${baseClass} ${variants[variant]} ${className}`}
     >
       {children}
-    </Link>
+    </a>
   );
 }

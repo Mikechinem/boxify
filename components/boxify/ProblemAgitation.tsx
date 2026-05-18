@@ -69,11 +69,14 @@ export default function ProblemAgitation() {
 
       <div className="mx-auto mt-12 max-w-4xl rounded-[2rem] border border-orange-500/20 bg-orange-500/10 p-6 text-center sm:p-8">
         <h3 className="text-2xl font-black tracking-tight text-white sm:text-3xl">
-          The more orders you get, the more your fulfilment system needs to look organized behind the scenes.
+          The more orders you get, the more your fulfilment system needs to look
+          organized behind the scenes.
         </h3>
 
         <p className="mx-auto mt-4 max-w-2xl text-base leading-8 text-zinc-300">
-          Boxify helps ecommerce vendors replace delivery chaos with a cleaner process for storage, confirmation, packaging, dispatch, reporting, and remittance.
+          Boxify helps ecommerce vendors replace delivery chaos with a cleaner
+          process for storage, confirmation, packaging, dispatch, reporting, and
+          remittance.
         </p>
       </div>
     </SectionWrapper>

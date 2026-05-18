@@ -1,17 +1,18 @@
-import { boxifyData } from "@/data/boxify";
+"use client";
+
 import CTAButton from "@/components/shared/CTAButton";
+import { boxifyData } from "@/data/boxify";
 
 export default function StickyMobileCTA() {
-  const { whatsappChatUrl } = boxifyData;
+  const { ctas } = boxifyData;
 
   return (
-    <div className="fixed inset-x-0 bottom-0 z-50 border-t border-white/10 bg-black/90 p-3 backdrop-blur-xl md:hidden">
+    <div className="fixed inset-x-0 bottom-0 z-50 border-t border-white/10 bg-black/90 px-4 py-3 backdrop-blur-xl sm:hidden">
       <CTAButton
-        href={whatsappChatUrl}
-        section="sticky-mobile"
-        className="w-full py-4"
+        section="sticky-mobile-cta"
+        className="w-full py-4 text-base"
       >
-        Set Up Fulfilment
+        {ctas.qualification}
       </CTAButton>
     </div>
   );

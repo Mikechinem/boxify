@@ -24,7 +24,6 @@ export default function CostOfInaction() {
   return (
     <SectionWrapper className="bg-black">
       <div className="grid gap-12 lg:grid-cols-[0.95fr_1.05fr] lg:items-center">
-        {/* Text content */}
         <div>
           <p className="mb-4 text-sm font-black uppercase tracking-[0.22em] text-orange-400">
             Hidden Cost
@@ -64,13 +63,12 @@ export default function CostOfInaction() {
           </div>
 
           <div className="mt-9">
-            <CTAButton href="#fulfilment-form" section="cost-scroll-to-form">
+            <CTAButton section="cost-of-inaction">
               {ctas.cost}
             </CTAButton>
           </div>
         </div>
 
-        {/* Image visual */}
         <div className="relative">
           <div className="absolute -inset-5 rounded-[2.5rem] bg-orange-600/20 blur-3xl" />
 

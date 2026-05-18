@@ -10,6 +10,7 @@ import ObjectionHandling from "@/components/boxify/ObjectionHandling";
 import FAQSection from "@/components/boxify/FAQSection";
 import FinalCTA from "@/components/boxify/FinalCTA";
 import StickyMobileCTA from "@/components/boxify/StickyMobileCTA";
+import FulfilmentRequestModal from "@/components/boxify/FulfilmentRequestModal";
 
 export default function Home() {
   return (
@@ -26,6 +27,7 @@ export default function Home() {
       <FAQSection />
       <FinalCTA />
       <StickyMobileCTA />
+      <FulfilmentRequestModal />
     </main>
   );
 }
