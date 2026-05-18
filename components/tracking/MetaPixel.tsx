@@ -1,8 +1,21 @@
 import Script from "next/script";
 import { TRACKING } from "@/lib/constants";
 
+function getMetaPixelIds() {
+  const pixelIdsFromEnv =
+    process.env.NEXT_PUBLIC_META_PIXEL_IDS?.split(",")
+      .map((id) => id.trim())
+      .filter(Boolean) ?? [];
+
+  const fallbackPixelId = TRACKING.metaPixelId ? [TRACKING.metaPixelId] : [];
+
+  return Array.from(new Set([...fallbackPixelId, ...pixelIdsFromEnv]));
+}
+
 export default function MetaPixel() {
-  if (!TRACKING.metaPixelId) return null;
+  const metaPixelIds = getMetaPixelIds();
+
+  if (metaPixelIds.length === 0) return null;
 
   return (
     <>
@@ -69,20 +82,28 @@ export default function MetaPixel() {
           s.parentNode.insertBefore(t,s)}(window, document,'script',
           'https://connect.facebook.net/en_US/fbevents.js');
 
-          fbq('init', '${TRACKING.metaPixelId}');
+          var boxifyMetaPixelIds = ${JSON.stringify(metaPixelIds)};
+
+          boxifyMetaPixelIds.forEach(function (pixelId) {
+            fbq('init', pixelId);
+          });
+
           fbq('track', 'PageView');
         `}
       </Script>
 
       <noscript>
-        {/* eslint-disable-next-line @next/next/no-img-element */}
-        <img
-          height="1"
-          width="1"
-          style={{ display: "none" }}
-          src={`https://www.facebook.com/tr?id=${TRACKING.metaPixelId}&ev=PageView&noscript=1`}
-          alt=""
-        />
+        {metaPixelIds.map((pixelId) => (
+          // eslint-disable-next-line @next/next/no-img-element
+          <img
+            key={pixelId}
+            height="1"
+            width="1"
+            style={{ display: "none" }}
+            src={`https://www.facebook.com/tr?id=${pixelId}&ev=PageView&noscript=1`}
+            alt=""
+          />
+        ))}
       </noscript>
     </>
   );

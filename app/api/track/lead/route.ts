@@ -31,21 +31,43 @@ function getClientIp(req: NextRequest) {
   );
 }
 
+function getMetaDatasetIds() {
+  const datasetIdsFromPluralEnv =
+    process.env.META_DATASET_IDS?.split(",")
+      .map((id) => id.trim())
+      .filter(Boolean) ?? [];
+
+  const fallbackDatasetId = process.env.META_DATASET_ID
+    ? [process.env.META_DATASET_ID]
+    : [];
+
+  return Array.from(new Set([...fallbackDatasetId, ...datasetIdsFromPluralEnv]));
+}
+
+export async function GET() {
+  return NextResponse.json({
+    success: true,
+    route: "/api/track/lead",
+    message: "Meta lead tracking route is active.",
+    datasetCount: getMetaDatasetIds().length,
+  });
+}
+
 export async function POST(req: NextRequest) {
   try {
     const body = (await req.json()) as MetaLeadPayload;
 
-    const datasetId = process.env.META_DATASET_ID;
+    const datasetIds = getMetaDatasetIds();
     const accessToken = process.env.META_ACCESS_TOKEN;
     const apiVersion = process.env.META_GRAPH_API_VERSION || "v25.0";
     const testEventCode = process.env.META_TEST_EVENT_CODE;
 
-    if (!datasetId || !accessToken) {
+    if (datasetIds.length === 0 || !accessToken) {
       return NextResponse.json(
         {
           success: false,
           error:
-            "Missing META_DATASET_ID or META_ACCESS_TOKEN environment variable.",
+            "Missing META_DATASET_ID/META_DATASET_IDS or META_ACCESS_TOKEN environment variable.",
         },
         { status: 500 }
       );
@@ -94,33 +116,60 @@ export async function POST(req: NextRequest) {
         : {}),
     });
 
-    const response = await fetch(
-      `https://graph.facebook.com/${apiVersion}/${datasetId}/events?access_token=${accessToken}`,
-      {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify(metaPayload),
-      }
+    const results = await Promise.all(
+      datasetIds.map(async (datasetId) => {
+        try {
+          const response = await fetch(
+            `https://graph.facebook.com/${apiVersion}/${datasetId}/events?access_token=${accessToken}`,
+            {
+              method: "POST",
+              headers: {
+                "Content-Type": "application/json",
+              },
+              body: JSON.stringify(metaPayload),
+            }
+          );
+
+          const result = await response.json();
+
+          return {
+            datasetId,
+            success: response.ok,
+            status: response.status,
+            meta: result,
+          };
+        } catch (error) {
+          return {
+            datasetId,
+            success: false,
+            status: 500,
+            meta: {
+              error:
+                error instanceof Error
+                  ? error.message
+                  : "Meta CAPI request failed.",
+            },
+          };
+        }
+      })
     );
 
-    const result = await response.json();
+    const failedResults = results.filter((result) => !result.success);
 
-    if (!response.ok) {
+    if (failedResults.length > 0) {
       return NextResponse.json(
         {
           success: false,
-          error: "Meta CAPI request failed.",
-          meta: result,
+          error: "One or more Meta CAPI requests failed.",
+          results,
         },
-        { status: response.status }
+        { status: 502 }
       );
     }
 
     return NextResponse.json({
       success: true,
-      meta: result,
+      results,
     });
   } catch (error) {
     return NextResponse.json(
