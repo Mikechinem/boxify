@@ -18,14 +18,7 @@ type ModalSource = {
 
 type RequestPayload = {
   name: string;
-  email: string;
   whatsappNumber: string;
-  businessName: string;
-  productCategory: string;
-  fulfilmentLocation: string;
-  averageOrders: string;
-  podNeed: string;
-  deliveryChallenge: string;
   leadSource: string;
   sourceSection: string;
   sourceLabel: string;
@@ -98,14 +91,7 @@ export default function FulfilmentRequestModal() {
 
     const payload: RequestPayload = {
       name: String(formData.get("name") || "").trim(),
-      email: String(formData.get("email") || "").trim(),
       whatsappNumber: String(formData.get("whatsappNumber") || "").trim(),
-      businessName: String(formData.get("businessName") || "").trim(),
-      productCategory: String(formData.get("productCategory") || "").trim(),
-      fulfilmentLocation: String(formData.get("fulfilmentLocation") || "").trim(),
-      averageOrders: String(formData.get("averageOrders") || "").trim(),
-      podNeed: String(formData.get("podNeed") || "").trim(),
-      deliveryChallenge: String(formData.get("deliveryChallenge") || "").trim(),
       leadSource: modal.leadSource,
       sourceSection: source.sourceSection,
       sourceLabel: source.sourceLabel,
@@ -117,10 +103,6 @@ export default function FulfilmentRequestModal() {
       eventId,
       section: payload.sourceSection,
       label: payload.sourceLabel,
-      email: payload.email,
-      fulfilmentLocation: payload.fulfilmentLocation,
-      averageOrders: payload.averageOrders,
-      podNeed: payload.podNeed,
     });
 
     try {
@@ -146,10 +128,6 @@ export default function FulfilmentRequestModal() {
         eventId,
         section: payload.sourceSection,
         label: payload.sourceLabel,
-        email: payload.email,
-        fulfilmentLocation: payload.fulfilmentLocation,
-        averageOrders: payload.averageOrders,
-        podNeed: payload.podNeed,
       });
 
       trackWhatsAppRedirect({
@@ -186,18 +164,18 @@ export default function FulfilmentRequestModal() {
         className="absolute inset-0 z-0 cursor-default"
       />
 
-      <div className="relative z-10 flex max-h-[calc(100vh-24px)] w-full max-w-xl flex-col overflow-hidden rounded-[1.5rem] border border-white/10 bg-zinc-950 shadow-[0_30px_100px_rgba(0,0,0,0.85)]">
+      <div className="relative z-10 flex max-h-[calc(100vh-24px)] w-full max-w-md flex-col overflow-hidden rounded-[1.5rem] border border-white/10 bg-zinc-950 shadow-[0_30px_100px_rgba(0,0,0,0.85)]">
         <div className="flex items-start justify-between gap-4 border-b border-white/10 bg-zinc-950 px-4 py-4">
           <div>
             <p className="text-[11px] font-black uppercase tracking-[0.22em] text-orange-400">
-              {modal.eyebrow}
+              Fulfilment Request
             </p>
 
             <h2
               id={titleId}
               className="mt-2 text-xl font-black leading-tight tracking-tight text-white sm:text-2xl"
             >
-              {modal.title}
+              Let Boxify Know You’re Interested
             </h2>
           </div>
 
@@ -210,94 +188,41 @@ export default function FulfilmentRequestModal() {
           </a>
         </div>
 
-       <form
-             method="post"
-             action="/api/fulfilment-request"
-             onSubmit={handleSubmit}
-            className="flex-1 overflow-y-auto px-4 py-4"
-           >
+        <form
+          method="post"
+          action="/api/fulfilment-request"
+          onSubmit={handleSubmit}
+          className="flex-1 overflow-y-auto px-4 py-4"
+        >
           <p
             id={descriptionId}
             className="text-sm font-medium leading-7 text-zinc-300"
           >
-            Answer these quick questions. After submitting, WhatsApp will open
-            with your request already prepared.
+            Drop your name and WhatsApp number. Your request will be saved first,
+            then WhatsApp will open with your message already prepared.
           </p>
 
           <div className="mt-4 rounded-2xl border border-orange-500/20 bg-orange-500/10 p-4">
             <p className="text-xs font-bold leading-6 text-orange-100">
-              Best for ecommerce vendors already selling physical products and
-              looking for fulfilment support in Abuja, Lagos, or both.
+              Best for ecommerce vendors who want fulfilment support in Abuja,
+              Lagos, or both.
             </p>
           </div>
 
-          <div className="mt-5 grid gap-3">
+          <div className="mt-5 grid gap-4">
             <Input
-              label={modal.fields.name}
+              label="Your name"
               name="name"
-              placeholder="Your name"
+              placeholder="Example: Michael"
               autoComplete="name"
             />
 
             <Input
-              label={modal.fields.email}
-              name="email"
-              type="email"
-              placeholder="Email address"
-              autoComplete="email"
-            />
-
-            <Input
-              label={modal.fields.whatsappNumber}
+              label="WhatsApp number"
               name="whatsappNumber"
-              placeholder="WhatsApp number"
+              placeholder="Example: 08012345678"
               autoComplete="tel"
             />
-
-            <Input
-              label={modal.fields.businessName}
-              name="businessName"
-              placeholder="Business name"
-              autoComplete="organization"
-            />
-
-            <Input
-              label={modal.fields.productCategory}
-              name="productCategory"
-              placeholder="What do you sell?"
-            />
-
-            <Select
-              label={modal.fields.fulfilmentLocation}
-              name="fulfilmentLocation"
-              options={modal.fulfilmentLocationOptions}
-            />
-
-            <Select
-              label={modal.fields.averageOrders}
-              name="averageOrders"
-              options={modal.averageOrdersOptions}
-            />
-
-            <Select
-              label={modal.fields.podNeed}
-              name="podNeed"
-              options={modal.podNeedOptions}
-            />
-
-            <label className="grid gap-1.5">
-              <span className="text-sm font-black text-white">
-                {modal.fields.deliveryChallenge}
-              </span>
-
-              <textarea
-                name="deliveryChallenge"
-                required
-                rows={3}
-                placeholder="Example: failed delivery, rider chasing, POD stress..."
-                className="resize-none rounded-2xl border border-white/10 bg-black px-4 py-3 text-base text-white outline-none transition placeholder:text-zinc-600 focus:border-orange-500"
-              />
-            </label>
           </div>
 
           {error ? (
@@ -307,21 +232,16 @@ export default function FulfilmentRequestModal() {
           ) : null}
 
           <div className="mt-5 rounded-2xl border border-white/10 bg-white/[0.04] p-4">
-            <p className="text-[11px] leading-5 text-zinc-400">
-              Your details will be sent to Boxify first. Then WhatsApp will open
-              with the message prepared. Nothing is sent on WhatsApp until you
-              press send there.
-            </p>
 
-            <button
+           <button
               type="submit"
               disabled={isBusy}
               className="mt-4 w-full rounded-full bg-[#ea580c] px-5 py-4 text-sm font-black text-white shadow-[0_0_30px_rgba(234,88,12,0.35)] transition hover:bg-orange-600 disabled:cursor-not-allowed disabled:opacity-70 sm:text-base"
             >
               {status === "submitting"
-                ? modal.loadingText
+                ? "Submitting..."
                 : status === "redirecting"
-                  ? modal.successRedirectText
+                  ? "Opening WhatsApp..."
                   : ctas.modalSubmit}
             </button>
           </div>
@@ -356,39 +276,6 @@ function Input({
         autoComplete={autoComplete}
         className="rounded-2xl border border-white/10 bg-black px-4 py-3 text-base text-white outline-none transition placeholder:text-zinc-600 focus:border-orange-500"
       />
-    </label>
-  );
-}
-
-function Select({
-  label,
-  name,
-  options,
-}: {
-  label: string;
-  name: string;
-  options: string[];
-}) {
-  return (
-    <label className="grid gap-1.5">
-      <span className="text-sm font-black text-white">{label}</span>
-
-      <select
-        name={name}
-        required
-        defaultValue=""
-        className="rounded-2xl border border-white/10 bg-black px-4 py-3 text-base text-white outline-none transition focus:border-orange-500"
-      >
-        <option value="" disabled>
-          Select one
-        </option>
-
-        {options.map((option) => (
-          <option key={option} value={option}>
-            {option}
-          </option>
-        ))}
-      </select>
     </label>
   );
 }

@@ -2,14 +2,7 @@ import { NextRequest, NextResponse } from "next/server";
 
 type FulfilmentRequestPayload = {
   name?: string;
-  email?: string;
   whatsappNumber?: string;
-  businessName?: string;
-  productCategory?: string;
-  fulfilmentLocation?: string;
-  averageOrders?: string;
-  podNeed?: string;
-  deliveryChallenge?: string;
   leadSource?: string;
   sourceSection?: string;
   sourceLabel?: string;
@@ -31,12 +24,6 @@ type CleanFulfilmentRequest = {
   name: string;
   email: string;
   whatsappNumber: string;
-  businessName: string;
-  productCategory: string;
-  fulfilmentLocation: string;
-  averageOrders: string;
-  podNeed: string;
-  deliveryChallenge: string;
   leadSource: string;
   sourceSection: string;
   sourceLabel: string;
@@ -47,10 +34,6 @@ function cleanText(value: unknown) {
   return String(value || "").trim();
 }
 
-function isValidEmail(email: string) {
-  return /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email);
-}
-
 function removeEmptyValues<T extends Record<string, unknown>>(obj: T) {
   return Object.fromEntries(
     Object.entries(obj).filter(([, value]) => {
@@ -59,14 +42,41 @@ function removeEmptyValues<T extends Record<string, unknown>>(obj: T) {
   );
 }
 
-function getWhatsAppBaseUrl() {
-  const number = process.env.NEXT_PUBLIC_WHATSAPP_NUMBER;
+function normalizeNigerianPhone(value: string) {
+  let number = value.replace(/[^\d]/g, "");
 
-  if (!number) {
-    return "https://wa.me/YOURNUMBER";
+  if (number.startsWith("0")) {
+    number = `234${number.slice(1)}`;
   }
 
-  const cleanedNumber = number.replace(/[^\d]/g, "");
+  return number;
+}
+
+function buildFallbackEmailFromPhone(whatsappNumber: string) {
+  const domain = process.env.LEAD_FALLBACK_EMAIL_DOMAIN || "myboxify.app";
+  const phone = normalizeNigerianPhone(whatsappNumber);
+
+  return `lead+${phone}@${domain}`;
+}
+
+function getWhatsAppBaseUrl() {
+  const rawNumber = process.env.NEXT_PUBLIC_WHATSAPP_NUMBER;
+
+  if (!rawNumber) {
+    throw new Error("Missing NEXT_PUBLIC_WHATSAPP_NUMBER environment variable.");
+  }
+
+  let cleanedNumber = rawNumber.replace(/[^\d]/g, "");
+
+  if (cleanedNumber.startsWith("0")) {
+    cleanedNumber = `234${cleanedNumber.slice(1)}`;
+  }
+
+  if (!cleanedNumber.startsWith("234")) {
+    throw new Error(
+      "NEXT_PUBLIC_WHATSAPP_NUMBER must be in Nigerian international format, for example 2347064969603."
+    );
+  }
 
   return `https://wa.me/${cleanedNumber}`;
 }
@@ -76,14 +86,7 @@ function buildWhatsAppMessage(data: CleanFulfilmentRequest) {
 Hi Boxify, I just submitted my fulfilment request.
 
 Name: ${data.name}
-Email: ${data.email}
 WhatsApp: ${data.whatsappNumber}
-Business: ${data.businessName}
-Product: ${data.productCategory}
-Fulfilment Location: ${data.fulfilmentLocation}
-Average Orders: ${data.averageOrders}
-POD Need: ${data.podNeed}
-Biggest Delivery Challenge: ${data.deliveryChallenge}
 
 Please explain how Boxify can help with my Abuja/Lagos fulfilment.
   `.trim();
@@ -107,100 +110,47 @@ export async function POST(req: NextRequest) {
       );
     }
 
-    const payload: CleanFulfilmentRequest = {
-      name: cleanText(body.name),
-      email: cleanText(body.email).toLowerCase(),
-      whatsappNumber: cleanText(body.whatsappNumber),
-      businessName: cleanText(body.businessName),
-      productCategory: cleanText(body.productCategory),
-      fulfilmentLocation: cleanText(body.fulfilmentLocation),
-      averageOrders: cleanText(body.averageOrders),
-      podNeed: cleanText(body.podNeed),
-      deliveryChallenge: cleanText(body.deliveryChallenge),
-      leadSource: cleanText(body.leadSource || "Boxify landing page"),
-      sourceSection: cleanText(body.sourceSection || "unknown"),
-      sourceLabel: cleanText(body.sourceLabel || "Boxify CTA"),
-      eventId: cleanText(body.eventId || ""),
-    };
+    const name = cleanText(body.name);
+    const whatsappNumber = cleanText(body.whatsappNumber);
+    const normalizedWhatsappNumber = normalizeNigerianPhone(whatsappNumber);
 
-    if (!payload.name) {
+    if (!name) {
       return NextResponse.json(
         { success: false, error: "Please enter your name." },
         { status: 400 }
       );
     }
 
-    if (!payload.email || !isValidEmail(payload.email)) {
-      return NextResponse.json(
-        { success: false, error: "Please enter a valid email address." },
-        { status: 400 }
-      );
-    }
-
-    if (!payload.whatsappNumber) {
+    if (!whatsappNumber) {
       return NextResponse.json(
         { success: false, error: "Please enter your WhatsApp number." },
         { status: 400 }
       );
     }
 
-    if (!payload.businessName) {
+    if (normalizedWhatsappNumber.length < 10) {
       return NextResponse.json(
-        { success: false, error: "Please enter your business name." },
+        { success: false, error: "Please enter a valid WhatsApp number." },
         { status: 400 }
       );
     }
 
-    if (!payload.productCategory) {
-      return NextResponse.json(
-        { success: false, error: "Please tell us what you sell." },
-        { status: 400 }
-      );
-    }
-
-    if (!payload.fulfilmentLocation) {
-      return NextResponse.json(
-        { success: false, error: "Please select your fulfilment location." },
-        { status: 400 }
-      );
-    }
-
-    if (!payload.averageOrders) {
-      return NextResponse.json(
-        { success: false, error: "Please select your average orders per week." },
-        { status: 400 }
-      );
-    }
-
-    if (!payload.podNeed) {
-      return NextResponse.json(
-        { success: false, error: "Please select your POD/cash collection need." },
-        { status: 400 }
-      );
-    }
-
-    if (!payload.deliveryChallenge) {
-      return NextResponse.json(
-        {
-          success: false,
-          error: "Please describe your biggest delivery challenge.",
-        },
-        { status: 400 }
-      );
-    }
+    const payload: CleanFulfilmentRequest = {
+      name,
+      email: buildFallbackEmailFromPhone(normalizedWhatsappNumber),
+      whatsappNumber: normalizedWhatsappNumber,
+      leadSource: cleanText(body.leadSource || "Boxify landing page"),
+      sourceSection: cleanText(body.sourceSection || "unknown"),
+      sourceLabel: cleanText(body.sourceLabel || "Boxify CTA"),
+      eventId: cleanText(body.eventId || ""),
+    };
 
     const mailerLitePayload = {
       email: payload.email,
       name: payload.name,
       groups: [groupId],
       fields: removeEmptyValues({
-        business_name: payload.businessName,
         whatsapp_number: payload.whatsappNumber,
-        product_category: payload.productCategory,
-        fulfilment_location: payload.fulfilmentLocation,
-        average_orders: payload.averageOrders,
-        pod_need: payload.podNeed,
-        delivery_challenge: payload.deliveryChallenge,
         lead_source: payload.leadSource,
       }),
     };

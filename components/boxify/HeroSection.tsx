@@ -213,45 +213,6 @@ export default function HeroSection() {
           </p>
         </div>
       </div>
-
-      <div className="relative z-10 mx-auto mt-12 max-w-7xl">
-        <div className="rounded-[2rem] border border-white/10 bg-white/[0.04] p-6 sm:p-8">
-          <div className="grid gap-10 lg:grid-cols-[0.8fr_1.2fr] lg:items-start">
-            <div>
-              <p className="text-sm font-black uppercase tracking-[0.22em] text-orange-400">
-                What Boxify Helps You Remove
-              </p>
-
-              <h2 className="mt-4 max-w-2xl text-3xl font-black leading-tight tracking-tight text-white sm:text-4xl lg:text-5xl">
-                Remove the fulfilment stress that makes ecommerce feel harder
-                than it should.
-              </h2>
-
-              <p className="mt-5 max-w-2xl text-lg font-medium leading-9 text-zinc-400">
-                Boxify helps ecommerce vendors replace manual dispatch stress
-                with a clearer fulfilment flow for Abuja and Lagos orders.
-              </p>
-            </div>
-
-            <div className="grid gap-4 sm:grid-cols-2">
-              {removalPoints.map((item) => (
-                <div
-                  key={item}
-                  className="flex gap-4 rounded-2xl border border-white/10 bg-black/40 p-5"
-                >
-                  <span className="mt-1 flex size-6 shrink-0 items-center justify-center rounded-full bg-orange-500 text-sm font-black text-white">
-                    ✓
-                  </span>
-
-                  <p className="text-base font-medium leading-8 text-zinc-300">
-                    {item}
-                  </p>
-                </div>
-              ))}
-            </div>
-          </div>
-        </div>
-      </div>
     </section>
   );
 }

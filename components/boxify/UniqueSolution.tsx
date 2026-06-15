@@ -68,67 +68,6 @@ export default function UniqueSolution() {
           </article>
         ))}
       </div>
-
-      {/* Full-width comparison table section */}
-      <section
-        aria-labelledby="comparison-title"
-        className="mt-16 rounded-[2rem] border border-white/10 bg-black p-4 glow-card sm:p-6 lg:p-8"
-      >
-        <div className="mx-auto max-w-4xl text-center">
-          <p className="text-sm font-black uppercase tracking-[0.22em] text-orange-400">
-            How You Deliver Matters
-          </p>
-
-          <h3
-            id="comparison-title"
-            className="mx-auto mt-4 max-w-4xl text-3xl font-black leading-tight tracking-tight text-white sm:text-4xl lg:text-5xl"
-          >
-            This Is Not Just Dispatch. This Is Fulfilment.
-          </h3>
-
-          <p className="mx-auto mt-5 max-w-3xl text-lg font-medium leading-8 text-zinc-300">
-            A random rider moves a package. Boxify helps manage the order
-            journey from customer confirmation to reporting and remittance.
-          </p>
-        </div>
-
-        <div className="mt-10 grid gap-4">
-          {comparison.map((row) => (
-            <div
-              key={row.usual}
-              className="grid gap-4 rounded-3xl border border-white/10 bg-white/[0.04] p-4 lg:grid-cols-2"
-            >
-              <div className="rounded-2xl border border-white/10 bg-zinc-950 p-5">
-                <p className="text-xs font-black uppercase tracking-[0.18em] text-zinc-500">
-                  The usual way
-                </p>
-
-                <p className="mt-3 text-lg font-semibold leading-8 text-zinc-300">
-                  {row.usual}
-                </p>
-              </div>
-
-              <div className="rounded-2xl border border-orange-500/20 bg-orange-500/10 p-5">
-                <p className="text-xs font-black uppercase tracking-[0.18em] text-orange-300">
-                  The Boxify way
-                </p>
-
-                <p className="mt-3 text-lg font-black leading-8 text-white">
-                  {row.boxify}
-                </p>
-              </div>
-            </div>
-          ))}
-        </div>
-
-        <div className="mx-auto mt-10 max-w-4xl rounded-3xl border border-orange-500/20 bg-orange-500/10 p-6 text-center">
-          <p className="text-lg font-bold leading-8 text-orange-100 sm:text-xl">
-            If you are serious about scaling ecommerce, you do not just need
-            delivery. You need fulfilment that protects the sale after the
-            customer says yes.
-          </p>
-        </div>
-      </section>
     </SectionWrapper>
   );
 }

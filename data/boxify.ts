@@ -79,7 +79,7 @@ export const boxifyData = {
   hero: {
     eyebrow: "For Nigerian Ecommerce Vendors Selling Physical Products Into Abuja & Lagos",
     headline:
-      "Turn Abuja & Lagos Into Your Local Fulfilment Zones — Without Renting A Warehouse, Hiring Riders, Or Chasing Deliveries All Day.",
+      "Stop Losing Your Lagos and Abuja Orders to Delivery Agents That Don't Care Enough About Your Business.",
     subheadline:
       "Boxify helps ecommerce brands store products, confirm customers, package orders, deliver fast, collect cash-on-delivery in Abuja and Lagos, send daily reports, and remit payment — so delivery stops killing the sales you worked hard to get.",
     bullets: [
@@ -484,10 +484,28 @@ export const boxifyData = {
   ],
 
   finalCta: {
-    headline: "Stop Letting Delivery Destroy The Trust You Worked Hard To Build.",
-    body:
-      "You have already done the hard part. You found the customer. You sold the product. You got the order. Now the order needs to arrive fast, safely, and professionally.",
-    ps:
-      "P.S. The longer your delivery process stays manual, the more every new order adds pressure to your business. Fix fulfilment now, and your next sale has a better chance of becoming a happy customer, repeat buyer, and trusted brand experience.",
+  headline: "Stop Letting Delivery Destroy The Trust You Worked Hard To Build.",
+  body:
+    "You have already done the hard part. You found the customer. You sold the product. You got the order. Now the order needs to arrive fast, safely, and professionally.",
+  ps:
+    "P.S. The longer your delivery process stays manual, the more every new order adds pressure to your business. Fix fulfilment now, and your next sale has a better chance of becoming a happy customer, repeat buyer, and trusted brand experience.",
+  contact: {
+    phoneLabel: "09021000812",
+    phoneHref: "tel:09021000812",
   },
+  offices: [
+    {
+      city: "Lagos Office",
+      addressLines: [
+        "No 80, Awosika Bus Stop, Opebi, Ikeja",
+        "Pentagon Plaza, opposite Chrisland School",
+        "Wing C, 3rd Floor",
+      ],
+    },
+    {
+      city: "Abuja Office",
+      addressLines: ["Suite C35, Efab Mall", "Area 11, Garki, Abuja"],
+    },
+  ],
+},
 };
