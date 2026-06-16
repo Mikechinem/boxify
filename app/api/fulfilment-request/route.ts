@@ -1,3 +1,4 @@
+import crypto from "crypto";
 import { NextRequest, NextResponse } from "next/server";
 
 type FulfilmentRequestPayload = {
@@ -17,6 +18,7 @@ type FulfilmentRequestPayload = {
     utmContent?: string;
     utmTerm?: string;
     fbclid?: string;
+    ttclid?: string;
   };
 };
 
@@ -92,6 +94,129 @@ Please explain how Boxify can help with my Abuja/Lagos fulfilment.
   `.trim();
 }
 
+function getClientIp(req: NextRequest) {
+  const forwardedFor = req.headers.get("x-forwarded-for");
+
+  if (forwardedFor) {
+    return forwardedFor.split(",")[0]?.trim();
+  }
+
+  return (
+    req.headers.get("x-real-ip") ||
+    req.headers.get("cf-connecting-ip") ||
+    undefined
+  );
+}
+
+function getCookie(req: NextRequest, name: string) {
+  return req.cookies.get(name)?.value;
+}
+
+function sha256(value: string) {
+  return crypto.createHash("sha256").update(value).digest("hex");
+}
+
+async function sendTikTokContactEvent({
+  req,
+  payload,
+  attribution,
+}: {
+  req: NextRequest;
+  payload: CleanFulfilmentRequest;
+  attribution?: FulfilmentRequestPayload["attribution"];
+}) {
+  const pixelCode =
+    process.env.TIKTOK_PIXEL_CODE || process.env.NEXT_PUBLIC_TIKTOK_PIXEL_CODE;
+  const accessToken = process.env.TIKTOK_ACCESS_TOKEN;
+  const testEventCode = process.env.TIKTOK_TEST_EVENT_CODE;
+
+  if (!pixelCode || !accessToken) {
+    return {
+      skipped: true,
+      reason: "Missing TIKTOK_PIXEL_CODE or TIKTOK_ACCESS_TOKEN.",
+    };
+  }
+
+  const userAgent = req.headers.get("user-agent") || undefined;
+  const ip = getClientIp(req);
+  const ttp = getCookie(req, "_ttp");
+  const eventId =
+    payload.eventId || `boxify_tiktok_contact_${Date.now()}_${Math.random()}`;
+
+  const normalizedPhone = normalizeNigerianPhone(payload.whatsappNumber);
+  const e164Phone = normalizedPhone.startsWith("+")
+    ? normalizedPhone
+    : `+${normalizedPhone}`;
+
+  const tiktokPayload = removeEmptyValues({
+    pixel_code: pixelCode,
+    event: "Contact",
+    event_id: eventId,
+    timestamp: new Date().toISOString(),
+
+    context: removeEmptyValues({
+      page: removeEmptyValues({
+        url: attribution?.currentUrl || attribution?.landingPage,
+        referrer: attribution?.referrer,
+      }),
+
+      user: removeEmptyValues({
+        phone_number: sha256(e164Phone),
+        ttclid: attribution?.ttclid,
+        ttp,
+        ip,
+        user_agent: userAgent,
+      }),
+    }),
+
+    properties: removeEmptyValues({
+      content_name: "Boxify WhatsApp Contact",
+      content_category: "Boxify Landing Page",
+      lead_source: payload.leadSource,
+      source_section: payload.sourceSection,
+      source_label: payload.sourceLabel,
+    }),
+
+    ...(testEventCode
+      ? {
+          test_event_code: testEventCode,
+        }
+      : {}),
+  });
+
+  try {
+    const response = await fetch(
+      "https://business-api.tiktok.com/open_api/v1.3/event/track/",
+      {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          "Access-Token": accessToken,
+        },
+        body: JSON.stringify(tiktokPayload),
+      }
+    );
+
+    const result = await response.json();
+
+    return {
+      skipped: false,
+      ok: response.ok,
+      status: response.status,
+      result,
+    };
+  } catch (error) {
+    return {
+      skipped: false,
+      ok: false,
+      error:
+        error instanceof Error
+          ? error.message
+          : "TikTok Events API request failed.",
+    };
+  }
+}
+
 export async function POST(req: NextRequest) {
   try {
     const body = (await req.json()) as FulfilmentRequestPayload;
@@ -142,7 +267,11 @@ export async function POST(req: NextRequest) {
       leadSource: cleanText(body.leadSource || "Boxify landing page"),
       sourceSection: cleanText(body.sourceSection || "unknown"),
       sourceLabel: cleanText(body.sourceLabel || "Boxify CTA"),
-      eventId: cleanText(body.eventId || ""),
+      eventId:
+        cleanText(body.eventId) ||
+        `boxify_tiktok_contact_${Date.now()}_${Math.random()
+          .toString(36)
+          .slice(2)}`,
     };
 
     const mailerLitePayload = {
@@ -183,6 +312,12 @@ export async function POST(req: NextRequest) {
       );
     }
 
+    const tiktok = await sendTikTokContactEvent({
+      req,
+      payload,
+      attribution: body.attribution,
+    });
+
     const message = buildWhatsAppMessage(payload);
 
     const whatsappUrl = `${getWhatsAppBaseUrl()}?text=${encodeURIComponent(
@@ -193,6 +328,7 @@ export async function POST(req: NextRequest) {
       success: true,
       whatsappUrl,
       subscriber: mailerLiteResult?.data || null,
+      tiktok,
     });
   } catch (error) {
     return NextResponse.json(

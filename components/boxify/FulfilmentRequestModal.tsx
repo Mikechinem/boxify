@@ -130,6 +130,30 @@ export default function FulfilmentRequestModal() {
         label: payload.sourceLabel,
       });
 
+      const ttq = (
+  window as Window & {
+    ttq?: {
+      track?: (
+        eventName: string,
+        properties?: Record<string, unknown>,
+        options?: Record<string, unknown>
+      ) => void;
+    };
+  }
+).ttq;
+
+ttq?.track?.(
+  "Contact",
+  {
+    content_name: "Boxify WhatsApp Contact",
+    content_category: "Boxify Landing Page",
+    event_id: eventId,
+  },
+  {
+    event_id: eventId,
+  }
+);
+
       trackWhatsAppRedirect({
         eventId,
         section: payload.sourceSection,

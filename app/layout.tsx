@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import "./globals.css";
 import MetaPixel from "@/components/tracking/MetaPixel";
 import GoogleAnalytics from "@/components/tracking/GoogleAnalytics";
+import TikTokPixel from "@/components/tracking/TikTokPixel";
 import { BRAND, SITE_URL } from "@/lib/constants";
 
 export const metadata: Metadata = {
@@ -38,6 +39,7 @@ export default function RootLayout({
       <body>
         <MetaPixel />
         <GoogleAnalytics />
+        <TikTokPixel />
         {children}
       </body>
     </html>
