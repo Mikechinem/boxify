@@ -6,6 +6,7 @@ type CTAButtonProps = {
   href?: string;
   children: React.ReactNode;
   section: string;
+  label?: string;
   variant?: "primary" | "secondary" | "ghost";
   className?: string;
 };
@@ -14,6 +15,7 @@ export default function CTAButton({
   href = "#fulfilment-request-modal",
   children,
   section,
+  label,
   variant = "primary",
   className = "",
 }: CTAButtonProps) {
@@ -30,11 +32,13 @@ export default function CTAButton({
   };
 
   function getButtonLabel() {
+    if (label) return label;
+
     return typeof children === "string" ? children : "Boxify CTA";
   }
 
   function handleClick() {
-    const label = getButtonLabel();
+    const buttonLabel = getButtonLabel();
 
     captureAttributionFromCurrentUrl();
 
@@ -43,7 +47,7 @@ export default function CTAButton({
         "boxify_modal_source",
         JSON.stringify({
           sourceSection: section,
-          sourceLabel: label,
+          sourceLabel: buttonLabel,
         })
       );
     } catch {
@@ -51,7 +55,7 @@ export default function CTAButton({
     }
 
     trackCtaClick({
-      label,
+      label: buttonLabel,
       section,
       destination: href,
     });
@@ -61,6 +65,7 @@ export default function CTAButton({
     <a
       href={href}
       onClick={handleClick}
+      aria-label={getButtonLabel()}
       className={`${baseClass} ${variants[variant]} ${className}`}
     >
       {children}

@@ -3,7 +3,7 @@ import { NextRequest, NextResponse } from "next/server";
 
 type FulfilmentRequestPayload = {
   name?: string;
-  whatsappNumber?: string;
+  email?: string;
   leadSource?: string;
   sourceSection?: string;
   sourceLabel?: string;
@@ -25,7 +25,6 @@ type FulfilmentRequestPayload = {
 type CleanFulfilmentRequest = {
   name: string;
   email: string;
-  whatsappNumber: string;
   leadSource: string;
   sourceSection: string;
   sourceLabel: string;
@@ -36,29 +35,16 @@ function cleanText(value: unknown) {
   return String(value || "").trim();
 }
 
+function isValidEmail(email: string) {
+  return /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email);
+}
+
 function removeEmptyValues<T extends Record<string, unknown>>(obj: T) {
   return Object.fromEntries(
     Object.entries(obj).filter(([, value]) => {
       return value !== undefined && value !== null && value !== "";
     })
   );
-}
-
-function normalizeNigerianPhone(value: string) {
-  let number = value.replace(/[^\d]/g, "");
-
-  if (number.startsWith("0")) {
-    number = `234${number.slice(1)}`;
-  }
-
-  return number;
-}
-
-function buildFallbackEmailFromPhone(whatsappNumber: string) {
-  const domain = process.env.LEAD_FALLBACK_EMAIL_DOMAIN || "myboxify.app";
-  const phone = normalizeNigerianPhone(whatsappNumber);
-
-  return `lead+${phone}@${domain}`;
 }
 
 function getWhatsAppBaseUrl() {
@@ -88,7 +74,7 @@ function buildWhatsAppMessage(data: CleanFulfilmentRequest) {
 Hi Boxify, I just submitted my fulfilment request.
 
 Name: ${data.name}
-WhatsApp: ${data.whatsappNumber}
+Email: ${data.email}
 
 Please explain how Boxify can help with my Abuja/Lagos fulfilment.
   `.trim();
@@ -113,7 +99,29 @@ function getCookie(req: NextRequest, name: string) {
 }
 
 function sha256(value: string) {
-  return crypto.createHash("sha256").update(value).digest("hex");
+  return crypto
+    .createHash("sha256")
+    .update(value.trim().toLowerCase())
+    .digest("hex");
+}
+
+async function parseRequestBody(req: NextRequest) {
+  const contentType = req.headers.get("content-type") || "";
+
+  if (contentType.includes("application/json")) {
+    return (await req.json()) as FulfilmentRequestPayload;
+  }
+
+  const formData = await req.formData();
+
+  return {
+    name: String(formData.get("name") || ""),
+    email: String(formData.get("email") || ""),
+    leadSource: String(formData.get("leadSource") || ""),
+    sourceSection: String(formData.get("sourceSection") || ""),
+    sourceLabel: String(formData.get("sourceLabel") || ""),
+    eventId: String(formData.get("eventId") || ""),
+  } satisfies FulfilmentRequestPayload;
 }
 
 async function sendTikTokContactEvent({
@@ -140,18 +148,11 @@ async function sendTikTokContactEvent({
   const userAgent = req.headers.get("user-agent") || undefined;
   const ip = getClientIp(req);
   const ttp = getCookie(req, "_ttp");
-  const eventId =
-    payload.eventId || `boxify_tiktok_contact_${Date.now()}_${Math.random()}`;
-
-  const normalizedPhone = normalizeNigerianPhone(payload.whatsappNumber);
-  const e164Phone = normalizedPhone.startsWith("+")
-    ? normalizedPhone
-    : `+${normalizedPhone}`;
 
   const tiktokPayload = removeEmptyValues({
     pixel_code: pixelCode,
     event: "Contact",
-    event_id: eventId,
+    event_id: payload.eventId,
     timestamp: new Date().toISOString(),
 
     context: removeEmptyValues({
@@ -161,7 +162,7 @@ async function sendTikTokContactEvent({
       }),
 
       user: removeEmptyValues({
-        phone_number: sha256(e164Phone),
+        email: sha256(payload.email),
         ttclid: attribution?.ttclid,
         ttp,
         ip,
@@ -219,7 +220,7 @@ async function sendTikTokContactEvent({
 
 export async function POST(req: NextRequest) {
   try {
-    const body = (await req.json()) as FulfilmentRequestPayload;
+    const body = await parseRequestBody(req);
 
     const apiToken = process.env.MAILERLITE_API_TOKEN;
     const groupId = process.env.MAILERLITE_GROUP_ID;
@@ -236,8 +237,7 @@ export async function POST(req: NextRequest) {
     }
 
     const name = cleanText(body.name);
-    const whatsappNumber = cleanText(body.whatsappNumber);
-    const normalizedWhatsappNumber = normalizeNigerianPhone(whatsappNumber);
+    const email = cleanText(body.email).toLowerCase();
 
     if (!name) {
       return NextResponse.json(
@@ -246,30 +246,22 @@ export async function POST(req: NextRequest) {
       );
     }
 
-    if (!whatsappNumber) {
+    if (!email || !isValidEmail(email)) {
       return NextResponse.json(
-        { success: false, error: "Please enter your WhatsApp number." },
-        { status: 400 }
-      );
-    }
-
-    if (normalizedWhatsappNumber.length < 10) {
-      return NextResponse.json(
-        { success: false, error: "Please enter a valid WhatsApp number." },
+        { success: false, error: "Please enter a valid email address." },
         { status: 400 }
       );
     }
 
     const payload: CleanFulfilmentRequest = {
       name,
-      email: buildFallbackEmailFromPhone(normalizedWhatsappNumber),
-      whatsappNumber: normalizedWhatsappNumber,
+      email,
       leadSource: cleanText(body.leadSource || "Boxify landing page"),
       sourceSection: cleanText(body.sourceSection || "unknown"),
       sourceLabel: cleanText(body.sourceLabel || "Boxify CTA"),
       eventId:
         cleanText(body.eventId) ||
-        `boxify_tiktok_contact_${Date.now()}_${Math.random()
+        `boxify_contact_${Date.now()}_${Math.random()
           .toString(36)
           .slice(2)}`,
     };
@@ -279,7 +271,6 @@ export async function POST(req: NextRequest) {
       name: payload.name,
       groups: [groupId],
       fields: removeEmptyValues({
-        whatsapp_number: payload.whatsappNumber,
         lead_source: payload.leadSource,
       }),
     };

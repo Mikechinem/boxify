@@ -10,14 +10,14 @@ export const boxifyData = {
   whatsappChatUrl: WHATSAPP_URL,
 
   ctas: {
-    primary: "Check If Boxify Can Handle My Fulfilment",
+    primary: "Chat With an Agent On WhatsApp",
     primaryLong: "Check If Boxify Can Handle My Abuja & Lagos Fulfilment",
     secondary: "Start My Fulfilment Request",
-    qualification: "Check If Boxify Can Handle My Fulfilment",
+    qualification: "Message Boxify on WhatsApp",
     problem: "Check If Delivery Is Killing My Sales",
     cost: "Check My Fulfilment Fit",
     mechanism: "Prepare My Fulfilment Request",
-    modalSubmit: "Submit & Continue To WhatsApp",
+    modalSubmit: "Get Rates & Chat On WhatsApp",
   },
 
   modal: {
@@ -79,9 +79,9 @@ export const boxifyData = {
   hero: {
     eyebrow: "For Nigerian Ecommerce Vendors Selling Physical Products Into Abuja & Lagos",
     headline:
-      "Stop Losing Your Lagos and Abuja Orders to Delivery Agents That Don't Care Enough About Your Business.",
+      "Stop Losing Lagos and Abuja Orders to Careless Delivery Agents.",
     subheadline:
-      "Boxify helps ecommerce brands store products, confirm customers, package orders, deliver fast, collect cash-on-delivery in Abuja and Lagos, send daily reports, and remit payment — so delivery stops killing the sales you worked hard to get.",
+      "Boxify handles your packaging, fast delivery, and Cash-on-Delivery in Lagos and Abuja. We remit your money daily and send automated reports, so you never look for your cash or your inventory.",
     bullets: [
       "Store your products closer to your Abuja and Lagos customers.",
       "Let Boxify confirm orders before dispatch.",

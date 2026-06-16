@@ -34,14 +34,6 @@ const heroGalleryImages = [
   },
 ];
 
-const removalPoints = [
-  "No renting warehouse space before serving Abuja and Lagos customers.",
-  "No chasing riders all day for order updates.",
-  "No manually confirming every customer before dispatch.",
-  "No chaotic POD follow-up for Abuja and Lagos orders.",
-  "No blind fulfilment process without daily reports.",
-];
-
 const supportItems = ["Warehouse", "Call Centre", "Daily Reports"];
 
 export default function HeroSection() {
@@ -78,10 +70,21 @@ export default function HeroSection() {
 
         <CTAButton
           section="nav"
+          label="Chat On WhatsApp"
           variant="secondary"
-          className="hidden sm:inline-flex"
+          className="hidden border-[#25D366]/60 bg-[#25D366] px-5 py-3 text-sm font-black text-white shadow-[0_0_35px_rgba(37,211,102,0.55)] hover:border-[#25D366] hover:bg-[#1ebe5d] hover:shadow-[0_0_45px_rgba(37,211,102,0.75)] sm:inline-flex"
         >
-          {ctas.qualification}
+          <span className="mr-2 flex size-7 items-center justify-center rounded-full bg-white text-[#25D366] shadow-[0_0_18px_rgba(255,255,255,0.35)]">
+            <svg
+              aria-hidden="true"
+              viewBox="0 0 32 32"
+              className="size-5 shrink-0 fill-current"
+            >
+              <path d="M16.04 3C8.86 3 3.02 8.73 3.02 15.78c0 2.26.61 4.47 1.76 6.4L3 29l7.02-1.8a13.22 13.22 0 0 0 6.02 1.48c7.18 0 13.02-5.73 13.02-12.78S23.22 3 16.04 3Zm0 23.5c-1.9 0-3.76-.5-5.4-1.44l-.39-.22-4.16 1.07 1.11-4.01-.26-.41a10.36 10.36 0 0 1-1.62-5.55c0-5.86 4.86-10.63 10.82-10.63s10.82 4.77 10.82 10.63S22 26.5 16.04 26.5Zm5.92-7.96c-.32-.16-1.9-.92-2.2-1.03-.3-.11-.52-.16-.74.16-.22.32-.85 1.03-1.04 1.24-.19.22-.38.24-.7.08-.32-.16-1.36-.49-2.6-1.55-.96-.84-1.61-1.88-1.8-2.2-.19-.32-.02-.49.14-.65.14-.14.32-.38.48-.57.16-.19.22-.32.32-.54.11-.22.05-.41-.03-.57-.08-.16-.74-1.75-1.01-2.4-.27-.65-.54-.56-.74-.57h-.63c-.22 0-.57.08-.87.41-.3.32-1.15 1.1-1.15 2.69s1.18 3.12 1.34 3.34c.16.22 2.32 3.49 5.62 4.89.79.33 1.4.53 1.88.68.79.25 1.51.21 2.08.13.63-.09 1.9-.76 2.17-1.5.27-.73.27-1.36.19-1.5-.08-.13-.3-.21-.63-.38Z" />
+            </svg>
+          </span>
+
+          <span>Chat Us On WhatsApp</span>
         </CTAButton>
       </nav>
 
@@ -120,10 +123,7 @@ export default function HeroSection() {
         </div>
 
         <div className="mt-9 flex flex-col justify-center gap-3 sm:flex-row">
-          <CTAButton
-            section="hero-primary"
-            className="w-full sm:w-auto"
-          >
+          <CTAButton section="hero-primary" className="w-full sm:w-auto">
             {ctas.primary}
           </CTAButton>
 
